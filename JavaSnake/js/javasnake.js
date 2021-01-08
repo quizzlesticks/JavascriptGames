@@ -15,7 +15,7 @@ class piece {
 		this.x = x;
 		this.y = y;
 	}
-	
+
 	draw(prev_body) {
 		this.x = prev_body.x;
 		this.y = prev_body.y;
@@ -139,6 +139,7 @@ const drawBoard = function() {
 		context.stroke();
 	}
 };
+
 drawBoard();
 player.draw();
 window.addEventListener("keydown", player.keyListener);

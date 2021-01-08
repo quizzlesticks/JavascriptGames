@@ -144,7 +144,7 @@ class Controller {
 	constructor(gamepad) {
 		this.gamepad = gamepad;
 		for (let i = 0; i<profile_list.length; i++) {
-			if(gamepad.id.includes(p.vendor) && gamepad.id.includes(p.product)){
+			if(gamepad.id.includes(profile_list[i].vendor) && gamepad.id.includes(profile_list[i].product)){
 				this.profile = profile_list[i];
 				break;
 			}
@@ -156,6 +156,10 @@ class Controller {
 			Object.defineProperty(this, 'touchpad', { get: function() { return this.gamepad.buttons[this.profile.buttons.touchpad]; } });
 			Object.defineProperty(this, 'screenshot', { get: function() { return this.gamepad.buttons[this.profile.buttons.screenshot]; } });
 		}
+	}
+	//FUNCTIONAL STUFF
+	updateGamepad() {
+		this.gamepad = navigator.getGamepads()[this.gamepad.index];
 	}
 	//DIGITALS
 	get a() {
