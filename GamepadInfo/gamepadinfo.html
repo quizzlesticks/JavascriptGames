@@ -1,8 +1,8 @@
 <html>
 	<head>
-		<meta charset="utf-8">
+		<meta charset="utf-8" name="viewport" content="width=device-width">
 		<title>Gamepad tester</title>
-		<link href="gamepadinfo.css" rel="stylesheet" type="text/css">	
+		<link href="gamepadinfo.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
 		<div class="home_link">
@@ -12,8 +12,10 @@
 		<div id="meta_info" class="meta_info"></div>
 		<div id="buttons_info" class="buttons_info"></div>
 		<div id="axes_info" class="axes_info"></div>
+		<canvas id="canvas"></canvas>
 		<div id="debug_info" class="debug_info"></div>
 		<script src="../js/UsefulDebugFunctions.js"></script>
+		<script src="../GamepadController/js/GamepadController.js"></script>
 		<script src="./js/gamepadinfo.js"></script>
 	</body>
 </html>
