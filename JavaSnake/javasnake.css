@@ -1,0 +1,65 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html{
+	height: 0%;
+	width: 100%;
+}
+
+.text_art_container{
+	display: grid;
+	grid-template-columns: 8fr 1fr 1fr 8fr;
+	font-family: monospace;
+	white-space: pre;
+	text-shadow: 0 0 20px , 0 0 40px, 0 0 80px , 0 0 100px;
+}
+
+.snake_text_art{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	color: #82e6b8;
+	text-shadow: 8px 1px 20px, 30px 10px 50px, 13px 1px 30px, 25px 1px 100px, 28px 6px 3px, 60px 17px 34px
+}
+
+.coffee_text_art{
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	color: #e8d9d3;
+	text-shadow: -34px 10px 68px, -22px -5px 3px, -63px -12px 94px, -18px -19px 38px, -20px 12px 27px, -50px -6px 40px, 18px 2px 28px, 0px 0px 65px;
+}
+
+.snake_art{
+	display: flex;
+	justify-content: flex-start;
+	color: #82e6b8;
+	text-shadow: -1px -2px 16px, 0 0 100px, 10px -17px 50px, -5px 6px 118px;
+}
+
+.coffee_art{
+	display: flex;
+	justify-content: flex-end;
+	color: #e8d9d3;
+	text-shadow: 0 0 20px , 0 0 40px, 0 0 80px , 0 0 100px;
+}
+
+.helptext{
+	margin-top: 10px;
+	text-align: center;
+	border: 3px solid #372d3c;
+	border-radius: 16px;
+	background-color: #463b4c;
+}
+
+body{
+	height: 100%;
+	width: 100%;
+	background-color: #000000;
+	color: #FBF5F3;
+	display: grid;
+	justify-content: center;
+}
