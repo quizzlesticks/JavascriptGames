@@ -21,55 +21,9 @@ const ControllerDrawSettings = {
 	//outline_color: "#bbb7b7e6"
 };
 
-//286 171
-//	ctx.bezierCurveTo(281,171,275,175,271,154);
-var x1 = 477;
-var y1 = 430;
-var cp1x = 477;
-var cp1y = 430;
-var cp2x = 500;
-var cp2y = 437;
-var x2 = 500;
-var y2 = 437;
-const tempKeyboard = function(e) {
-	if(e.code == "ArrowLeft")
-		x2 -= 1;
-	if(e.code == "ArrowRight")
-		x2 += 1;
-	if(e.code == "ArrowDown")
-		y2 += 1;
-	if(e.code == "ArrowUp")
-		y2 -= 1;
-	if(e.code == "KeyA")
-		x1 -= 1;
-	if(e.code == "KeyD")
-		x1 += 1;
-	if(e.code == "KeyS")
-		y1 += 1;
-	if(e.code == "KeyW")
-		y1 -= 1;
-	if(e.code == "KeyF")
-		cp1x -= 1;
-	if(e.code == "KeyH")
-		cp1x += 1;
-	if(e.code == "KeyG")
-		cp1y += 1;
-	if(e.code == "KeyT")
-		cp1y -= 1;
-	if(e.code == "KeyJ")
-		cp2x -= 1;
-	if(e.code == "KeyL")
-		cp2x += 1;
-	if(e.code == "KeyK")
-		cp2y += 1;
-	if(e.code == "KeyI")
-		cp2y -= 1;
-};
-
 const drawController = function() {
-	//ctx.fillStyle = "#201A23";
-	//ctx.fillRect(0,0,canvas.width,canvas.height);
-	ctx.clearRect(0,0,canvas.width,canvas.height);
+	ctx.fillStyle = "#201A23";
+	ctx.fillRect(0,0,canvas.width,canvas.height);
 	//LEFT WHITE PANEL
 	ctx.strokeStyle = "#FF0000";
 	ctx.beginPath();
@@ -298,28 +252,7 @@ const drawController = function() {
 	ctx.bezierCurveTo(505,379,515,380,517,372);
 	ctx.stroke();
 
-
-//	ctx.moveTo(x1,y1);
-//	ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,x2,y2);
-//	ctx.fillStyle = "#0000FF";
-//	ctx.fillRect(cp1x,cp1y,1,1);
-//	ctx.fillRect(cp2x,cp2y,1,1);
-//	ctx.stroke();
-
-	ctx.strokeStyle = "#FF0000";
-	ctx.beginPath();
-
-	ctx.stroke();
-
 	requestAnimationFrame(drawController);
-	metainfo.innerHTML = "x1: " + x1 + "<br>" +
-	                     "y2: " + y1 + "<br>" +
-						 "cp1x: " + cp1x + "<br>" +
-						 "cp1y: " + cp1y + "<br>" +
-						 "cp2x: " + cp2x + "<br>" +
-						 "cp2y: " + cp2y + "<br>" +
-						 "x2: " + x2 + "<br>" +
-						 "y2: " + y2;
 };
 
 const controllerConnector = function(e) {
@@ -341,19 +274,6 @@ const gamepadPoll = function() {
 	debuginfo.innerHTML = fullPropertyPrinter(controller.a);
 };
 
-drawController();
-//var img = new Image();
-//img.onload = function() {
-//	ctx.drawImage(img,0,0);
-	requestAnimationFrame(drawController);
-//}
-//img.src = "./pics/ps5.jpg";
+requestAnimationFrame(drawController);
 window.addEventListener("gamepadconnected", controllerConnector);
 window.addEventListener("gamepaddisconnected", controllerDisconnector);
-window.addEventListener("keydown", tempKeyboard);
-window.addEventListener("keydown", function(e) {
-    // space and arrow keys
-    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
-        e.preventDefault();
-    }
-}, false);
