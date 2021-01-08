@@ -9,6 +9,10 @@ html{
 	width: 100%;
 }
 
+.home_link{
+	text-align: center;
+}
+
 .text_art_container{
 	display: grid;
 	grid-template-columns: 8fr 1fr 1fr 8fr;
