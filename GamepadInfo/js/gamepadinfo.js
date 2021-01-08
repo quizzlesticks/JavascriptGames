@@ -26,11 +26,20 @@ const ControllerDrawSettings = {
 	led_color: "#473bf3",
 	outline_color: "#bbb7b7e6",
 	background_color: "#201A23",
+	x_color: "#b1afafe6",
+	triangle_color: "#b1afafe6",
+	square_color: "#b1afafe6",
+	circle_color: "#b1afafe6",
 	button_fill_color: "#b1afafe6",
 	button_outline_color: "#969292e6",
-	sel_start_button_fill_color: "#b3b1b1e6",
+	start_color: "#b3b1b1e6",
+	select_color: "#b3b1b1e6",
 	sel_start_button_outline_color: "#969292e6",
-	letter_color: "#868282e6"
+	letter_color: "#868282e6",
+	touchpad_color: "#bbb7b7e6",
+	lstick_color: "#201A23",
+	rstick_color: "#201A23",
+	screenshot_color: "#201A23"
 };
 ControllerDrawSettings.white_plate_gradient_left.addColorStop(0, ControllerDrawSettings.large_white_plate);
 ControllerDrawSettings.white_plate_gradient_left.addColorStop(1, ControllerDrawSettings.inside_white_curve);
@@ -136,8 +145,8 @@ const drawController = function() {
 	ctx.strokeStyle = ControllerDrawSettings.background_color;
 	ctx.fill()
 	ctx.stroke()
-	ctx.fillStyle = ControllerDrawSettings.large_white_plate;
-	ctx.strokeStyle = ControllerDrawSettings.large_white_plate;
+	ctx.fillStyle = ControllerDrawSettings.touchpad_color;
+	ctx.strokeStyle = ControllerDrawSettings.outline_color;
 	ctx.fill()
 	ctx.stroke()
 	//LITTLE NOTCH ABOVE LED LEFT
@@ -205,7 +214,7 @@ const drawController = function() {
 	ctx.stroke();
 	//SELECT
 	ctx.strokeStyle = ControllerDrawSettings.sel_start_button_outline_color;
-	ctx.fillStyle = ControllerDrawSettings.sel_start_button_fill_color;
+	ctx.fillStyle = ControllerDrawSettings.select_color;
 	ctx.beginPath();
 	ctx.moveTo(271,154);
 	ctx.bezierCurveTo(265,137,270,129,278,129);
@@ -215,6 +224,7 @@ const drawController = function() {
 	ctx.stroke();
 	ctx.fill();
 	//START
+	ctx.fillStyle = ControllerDrawSettings.start_color;
 	ctx.beginPath();
 	ctx.moveTo(1000-271,154);
 	ctx.bezierCurveTo(1000-265,137,1000-270,129,1000-278,129);
@@ -225,32 +235,38 @@ const drawController = function() {
 	ctx.fill();
 	//LSTICK
 	ctx.strokeStyle = ControllerDrawSettings.outline_color;
+	ctx.fillStyle = ControllerDrawSettings.lstick_color;
 	ctx.beginPath();
 	ctx.arc(349,381,55,0,2*Math.PI);
 	ctx.stroke();
+	ctx.fill();
 	//RSTICK
-	ctx.strokeStyle = ControllerDrawSettings.outline_color;
+	ctx.fillStyle = ControllerDrawSettings.rstick_color;
 	ctx.beginPath();
-	ctx.arc(1000-349,381,55,0,2*Math.PI);
+	ctx.arc(651,381,55,0,2*Math.PI);
 	ctx.stroke();
+	ctx.fill();
 	//TRIANGLE
 	ctx.strokeStyle = ControllerDrawSettings.button_outline_color;
-	ctx.fillStyle = ControllerDrawSettings.button_fill_color;
+	ctx.fillStyle = ControllerDrawSettings.triangle_color;
 	ctx.beginPath();
 	ctx.arc(792,184,30,0,2*Math.PI);
 	ctx.stroke();
 	ctx.fill();
 	//CIRCLE
+	ctx.fillStyle = ControllerDrawSettings.circle_color;
 	ctx.beginPath();
 	ctx.arc(860,253,30,0,2*Math.PI);
 	ctx.stroke();
 	ctx.fill();
 	//X
+	ctx.fillStyle = ControllerDrawSettings.x_color;
 	ctx.beginPath();
 	ctx.arc(792,322,30,0,2*Math.PI);
 	ctx.stroke();
 	ctx.fill();
 	//SQUARE
+	ctx.fillStyle = ControllerDrawSettings.square_color;
 	ctx.beginPath();
 	ctx.arc(723,253,30,0,2*Math.PI);
 	ctx.stroke();
@@ -283,12 +299,14 @@ const drawController = function() {
 	ctx.stroke();
 	//SCREENSHOT
 	ctx.strokeStyle = ControllerDrawSettings.outline_color;
+	ctx.fillStyle = ControllerDrawSettings.screenshot_color;
 	ctx.beginPath();
 	ctx.arc(483,431,6,Math.PI/2,3*Math.PI/2);
 	ctx.lineTo(517,425);
 	ctx.arc(517,431,6,3*Math.PI/2,Math.PI/2);
 	ctx.lineTo(483,437);
 	ctx.stroke();
+	ctx.fill();
 	//PS BUTTON
 	ctx.strokeStyle = ControllerDrawSettings.outline_color;
 		//RIGHT CURVE
@@ -346,7 +364,58 @@ const controllerDisconnector = function(e) {
 const gamepadPoll = function() {
 	//debuginfo.innerHTML = JSON.stringify(controller.gamepad.buttons[0], null, 4);
 	//debuginfo.innerHTML = fullPropertyPrinter(controller.gamepad);
-	debuginfo.innerHTML = fullPropertyPrinter(controller.a);
+	controller.updateGamepad();
+	debuginfo.innerHTML = fullPropertyPrinter(controller.rstick);
+	if (controller.x.pressed){
+		ControllerDrawSettings.x_color = "#2cff3c6b";
+	} else {
+		ControllerDrawSettings.x_color = "#b1afafe6";
+	}
+	if (controller.square.pressed){
+		ControllerDrawSettings.square_color = "#2cff3c6b";
+	} else {
+		ControllerDrawSettings.square_color = "#b1afafe6";
+	}
+	if (controller.triangle.pressed){
+		ControllerDrawSettings.triangle_color = "#2cff3c6b";
+	} else {
+		ControllerDrawSettings.triangle_color = "#b1afafe6";
+	}
+	if (controller.circle.pressed){
+		ControllerDrawSettings.circle_color = "#2cff3c6b";
+	} else {
+		ControllerDrawSettings.circle_color = "#b1afafe6";
+	}
+	if(controller.select.pressed){
+		ControllerDrawSettings.select_color = "#2cff3c6b";
+	} else {
+		ControllerDrawSettings.select_color = "#b3b1b1e6";
+	}
+	if(controller.start.pressed){
+		ControllerDrawSettings.start_color = "#2cff3c6b";
+	} else {
+		ControllerDrawSettings.start_color = "#b3b1b1e6";
+	}
+	if(controller.touchpad.pressed){
+		ControllerDrawSettings.touchpad_color = "#76cd7b";
+	} else {
+		ControllerDrawSettings.touchpad_color = "#bbb7b7e6";
+	}
+	if(controller.lstick.pressed){
+		ControllerDrawSettings.lstick_color = "#76cd7b";
+	} else {
+		ControllerDrawSettings.lstick_color = "#201A23";
+	}
+	if(controller.rstick.pressed){
+		ControllerDrawSettings.rstick_color = "#76cd7b";
+	} else {
+		ControllerDrawSettings.rstick_color = "#201A23";
+	}
+	if(controller.screenshot.pressed){
+		ControllerDrawSettings.screenshot_color = "#66cd6b";
+	} else {
+		ControllerDrawSettings.rstick_color = "#201A23";
+	}
 };
 
 requestAnimationFrame(drawController);
