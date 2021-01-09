@@ -414,7 +414,7 @@ const gamepadPoll = function() {
 	if(controller.screenshot.pressed){
 		ControllerDrawSettings.screenshot_color = "#66cd6b";
 	} else {
-		ControllerDrawSettings.rstick_color = "#201A23";
+		ControllerDrawSettings.screenshot_color = "#201A23";
 	}
 };
 
