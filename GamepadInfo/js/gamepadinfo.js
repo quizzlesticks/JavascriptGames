@@ -1,7 +1,7 @@
 const metainfo = document.getElementById("meta_info");
 const buttonsinfo = document.getElementById("buttons_info");
 const axesinfo = document.getElementById("axes_info");
-const debuginfo = document.getElementById("debug_info");
+//const debuginfo = document.getElementById("debug_info");
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext("2d");
@@ -9,11 +9,8 @@ const ctx = canvas.getContext("2d");
 canvas.height = 750;
 canvas.width = 1000;
 
-metainfo.innerHTML = "Please connect a gamepad";
-buttonsinfo.innerHTML = "";
-debuginfo.innterHTML = "No debug info";
-
-let display_looper;
+let controller_looper;
+let anim_looper;
 let controller;
 
 const ControllerDrawSettings = {
@@ -340,10 +337,11 @@ const drawController = function() {
 	ctx.fill();
 	//LT RT Text
 	ctx.font = "30px Helvetica";
+	ctx.textAlign = "center";
 	ctx.fillStyle = ControllerDrawSettings.lt_text_color;
-	ctx.fillText("LT",85,72);
+	ctx.fillText("LT",100,71);
 	ctx.fillStyle = ControllerDrawSettings.rt_text_color;
-	ctx.fillText("RT",882,72);
+	ctx.fillText("RT",900,71);
 	//SCREENSHOT
 	ctx.strokeStyle = ControllerDrawSettings.outline_color;
 	ctx.fillStyle = ControllerDrawSettings.screenshot_color;
@@ -413,27 +411,11 @@ const drawController = function() {
 	ctx.moveTo(504,387);
 	ctx.lineTo(517,384);
 	ctx.stroke();
-
-	requestAnimationFrame(drawController);
-};
-
-const controllerConnector = function(e) {
-	metainfo.innerHTML = "Controller connected!";
-	controller = new Controller(e.gamepad);
-	display_looper = setInterval(gamepadPoll, 100);
-};
-
-const controllerDisconnector = function(e) {
-	clearInterval(display_looper);
-	metainfo.innerHTML = "Controller disconnected, reconnect to display info";
-	buttonsinfo.innerHTML = "";
-	debuginfo.innerHTML = "";
+	anim_looper = requestAnimationFrame(drawController);
 };
 
 const gamepadPoll = function() {
 	controller.updateGamepad();
-	//debuginfo.innerHTML = fullPropertyPrinter(controller.a_dpad);
-	debuginfo.innerHTML = controller.a_dpad;
 	if (controller.x.pressed){
 		ControllerDrawSettings.x_color = "#2cff3c6b";
 	} else {
@@ -557,6 +539,74 @@ const gamepadPoll = function() {
 	}
 };
 
-requestAnimationFrame(drawController);
+const controllerConnector = function(e) {
+	controller = new Controller(e.gamepad);
+	controller_looper = setInterval(gamepadPoll, 100);
+	anim_looper = requestAnimationFrame(drawController);
+	window.cancelAnimationFrame(loading_circle_anim_looper);
+};
+
+const controllerDisconnector = function(e) {
+	clearInterval(controller_looper);
+	window.cancelAnimationFrame(anim_looper);
+	displayConnectController();
+};
+
+var loading_circle_radius;
+var loading_circle_rotation;
+var loading_circle_speed;
+var loading_circle_anim_looper;
+
+const displayConnectController = function() {
+	ctx.fillStyle = ControllerDrawSettings.background_color;
+	ctx.fillRect(0,0,canvas.width,canvas.height);
+	ctx.font = "30px Helvetica";
+	ctx.fillStyle = ControllerDrawSettings.outline_color;
+	ctx.textAlign = "center";
+	ctx.fillText("Connect a controller.",canvas.width/2,canvas.height/2);
+	loadingCircleInit();
+};
+
+const loadingCircleInit = function() {
+	loading_circle_radius = 30;
+	loading_circle_rotation = 270*(Math.PI/180);
+	loading_circle_speed = 6;
+	displayLoadingCircle();
+};
+
+const renderLoadingCircle = function() {
+	ctx.save();
+	ctx.translate(canvas.width/2+25, 3*canvas.height/4-25-80);
+	ctx.rotate(loading_circle_rotation + loading_circle_speed/4);
+	ctx.globalCompositeOperation = 'source-over';
+	ctx.fillStyle = ControllerDrawSettings.background_color;
+	ctx.beginPath();
+	ctx.moveTo(0,0);
+	ctx.arc(0,0,loading_circle_radius+36, 0,Math.PI/3+1/12+1/18, false);
+	ctx.fill();
+	ctx.restore();
+	ctx.save();
+	ctx.translate(canvas.width/2, 3*canvas.height/4-80);
+	ctx.rotate(loading_circle_rotation);
+	ctx.lineWidth = .5;
+	ctx.strokeStyle = 'rgba(187,183,183,.75)';
+	var i = loading_circle_radius;
+	var j = 2;
+	while(j--){
+		i--;
+		ctx.beginPath();
+		ctx.arc(0, 0,Math.random()*65, 0, Math.PI/6+(Math.random()/12), false);
+		ctx.stroke();
+    }
+	ctx.restore();
+};
+
+const displayLoadingCircle = function() {
+	loading_circle_anim_looper = window.requestAnimationFrame(displayLoadingCircle);
+	loading_circle_rotation += loading_circle_speed/100;
+	renderLoadingCircle();
+};
+
+displayConnectController();
 window.addEventListener("gamepadconnected", controllerConnector);
 window.addEventListener("gamepaddisconnected", controllerDisconnector);
