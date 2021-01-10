@@ -576,22 +576,21 @@ const loadingCircleInit = function() {
 
 const renderLoadingCircle = function() {
 	ctx.save();
-	ctx.translate(canvas.width/2+25, 3*canvas.height/4-25-80);
-	ctx.rotate(loading_circle_rotation + loading_circle_speed/4);
-	ctx.globalCompositeOperation = 'source-over';
-	ctx.fillStyle = ControllerDrawSettings.background_color;
-	ctx.beginPath();
-	ctx.moveTo(0,0);
-	ctx.arc(0,0,loading_circle_radius+36, 0,Math.PI/3+1/12+1/18, false);
-	ctx.fill();
-	ctx.restore();
-	ctx.save();
 	ctx.translate(canvas.width/2, 3*canvas.height/4-80);
 	ctx.rotate(loading_circle_rotation);
 	ctx.lineWidth = .5;
 	ctx.strokeStyle = 'rgba(187,183,183,.75)';
 	var i = loading_circle_radius;
 	var j = 2;
+	while(j--){
+		i--;
+		ctx.beginPath();
+		ctx.arc(0, 0,Math.random()*65, 0, Math.PI/6+(Math.random()/12), false);
+		ctx.stroke();
+    }
+	var i = loading_circle_radius;
+	j = 2;
+	ctx.strokeStyle = ControllerDrawSettings.background_color;
 	while(j--){
 		i--;
 		ctx.beginPath();
