@@ -116,6 +116,10 @@ const PS5Profile = {
 		dpad_r: -0.42857,
 		dpad_u: -1,
 		dpad_d: 0.14286,
+		dpad_ur: -0.71429,
+		dpad_ul: 1,
+		dpad_dr: -0.14286,
+		dpad_dl: 0.42857,
 		lt_neutral: -1,
 		lt_full: 1,
 		rt_neutral: -1,
@@ -261,11 +265,11 @@ class Controller {
 	}
 	//THE NORMALS FOR THE TRIGGERS GO BETWEEN 0 AND 1
 	get n_lt() {
-		return (this.gamepad.axes[this.profile.axes.lt]+this.profile.axes_limits.lt_neutral)/
-		       (this.profile.axes_limits.lt_full - this.profile.axes_limits.lt_neutral);
+		return (this.gamepad.axes[this.profile.axes.lt]-this.profile.axes_limits.lt_neutral)/
+		      (this.profile.axes_limits.lt_full - this.profile.axes_limits.lt_neutral);
 	}
 	get n_rt() {
-		return (this.gamepad.axes[this.profile.axes.rt]+this.profile.axes_limits.rt_neutral)/
+		return (this.gamepad.axes[this.profile.axes.rt]-this.profile.axes_limits.rt_neutral)/
 		       (this.profile.axes_limits.rt_full - this.profile.axes_limits.rt_neutral);
 	}
 
@@ -293,6 +297,30 @@ class Controller {
 		this.profile.axes_limits.dpad_d - this.profile.axes_deadzone.dpad) &&
 		(this.gamepad.axes[this.profile.axes.dpad] <=
 		this.profile.axes_limits.dpad_d + this.profile.axes_deadzone.dpad)
+	}
+	get dpad_up_left() {
+		return (this.gamepad.axes[this.profile.axes.dpad] >=
+		this.profile.axes_limits.dpad_ul - this.profile.axes_deadzone.dpad) &&
+		(this.gamepad.axes[this.profile.axes.dpad] <=
+		this.profile.axes_limits.dpad_ul + this.profile.axes_deadzone.dpad)
+	}
+	get dpad_up_right() {
+		return (this.gamepad.axes[this.profile.axes.dpad] >=
+		this.profile.axes_limits.dpad_ur - this.profile.axes_deadzone.dpad) &&
+		(this.gamepad.axes[this.profile.axes.dpad] <=
+		this.profile.axes_limits.dpad_ur + this.profile.axes_deadzone.dpad)
+	}
+	get dpad_down_left() {
+		return (this.gamepad.axes[this.profile.axes.dpad] >=
+		this.profile.axes_limits.dpad_dl - this.profile.axes_deadzone.dpad) &&
+		(this.gamepad.axes[this.profile.axes.dpad] <=
+		this.profile.axes_limits.dpad_dl + this.profile.axes_deadzone.dpad)
+	}
+	get dpad_down_right() {
+		return (this.gamepad.axes[this.profile.axes.dpad] >=
+		this.profile.axes_limits.dpad_dr - this.profile.axes_deadzone.dpad) &&
+		(this.gamepad.axes[this.profile.axes.dpad] <=
+		this.profile.axes_limits.dpad_dr + this.profile.axes_deadzone.dpad)
 	}
 
 	get lstick_left() {

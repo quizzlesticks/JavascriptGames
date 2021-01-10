@@ -39,7 +39,28 @@ const ControllerDrawSettings = {
 	touchpad_color: "#bbb7b7e6",
 	lstick_color: "#201A23",
 	rstick_color: "#201A23",
-	screenshot_color: "#201A23"
+	screenshot_color: "#201A23",
+	dpad_u_color: "#b1afafe6",
+	dpad_d_color:"#b1afafe6",
+	dpad_l_color:"#b1afafe6",
+	dpad_r_color:"#b1afafe6",
+	rb_color: "#201A23",
+	lb_color: "#201A23",
+	ps_logo_color: "#201A23",
+	ps_logo_outline_color: "#bbb7b7e6",
+	lt_color: "#201A23",
+	rt_color: "#201A23",
+	lt_text_color: "#bbb7b7e6",
+	rt_text_color: "#bbb7b7e6",
+	lstick_x_pos_dead: 349,
+	lstick_y_pos_dead: 381,
+	lstick_x_pos: 349,
+	lstick_y_pos: 381,
+	rstick_x_pos_dead: 651,
+	rstick_y_pos_dead: 381,
+	rstick_x_pos: 651,
+	rstick_y_pos: 381,
+	stick_movement_multiplier: 20
 };
 ControllerDrawSettings.white_plate_gradient_left.addColorStop(0, ControllerDrawSettings.large_white_plate);
 ControllerDrawSettings.white_plate_gradient_left.addColorStop(1, ControllerDrawSettings.inside_white_curve);
@@ -163,7 +184,7 @@ const drawController = function() {
 	ctx.stroke();
 	//DPAD UP
 	ctx.strokeStyle = ControllerDrawSettings.button_outline_color;
-	ctx.fillStyle = ControllerDrawSettings.button_fill_color;
+	ctx.fillStyle = ControllerDrawSettings.dpad_u_color;
 	ctx.beginPath();
 	ctx.moveTo(185,221);
 	ctx.bezierCurveTo(171,168,196,178,206,175);
@@ -172,6 +193,7 @@ const drawController = function() {
 	ctx.stroke();
 	ctx.fill();
 	//DPAD RIGHT
+	ctx.fillStyle = ControllerDrawSettings.dpad_r_color;
 	ctx.beginPath();
 	ctx.moveTo(241,229);
 	ctx.bezierCurveTo(262,228,288,214,287,253);
@@ -180,6 +202,7 @@ const drawController = function() {
 	ctx.stroke();
 	ctx.fill();
 	//DPAD DOWN
+	ctx.fillStyle = ControllerDrawSettings.dpad_d_color;
 	ctx.beginPath();
 	ctx.moveTo(185,285);
 	ctx.bezierCurveTo(180,320,176,332,209,331);
@@ -188,6 +211,7 @@ const drawController = function() {
 	ctx.stroke();
 	ctx.fill();
 	//DPAD LEFT
+	ctx.fillStyle = ControllerDrawSettings.dpad_l_color;
 	ctx.beginPath();
 	ctx.moveTo(174,277);
 	ctx.bezierCurveTo(141,282,130,285,130,251);
@@ -196,6 +220,7 @@ const drawController = function() {
 	ctx.stroke();
 	ctx.fill();
 	//LEFT BUMPER
+	ctx.fillStyle = ControllerDrawSettings.lb_color;
 	ctx.strokeStyle = ControllerDrawSettings.outline_color;
 	ctx.beginPath();
 	ctx.moveTo(151,120);
@@ -204,7 +229,9 @@ const drawController = function() {
 	ctx.bezierCurveTo(274,85,275,93,274,96);
 	ctx.bezierCurveTo(213,105,151,119,151,120);
 	ctx.stroke();
+	ctx.fill();
 	//RIGHT BUMPER
+	ctx.fillStyle = ControllerDrawSettings.rb_color;
 	ctx.beginPath();
 	ctx.moveTo(849,120);
 	ctx.bezierCurveTo(848,113,847,106,847,105);
@@ -212,6 +239,7 @@ const drawController = function() {
 	ctx.bezierCurveTo(726,85,725,93,726,96);
 	ctx.bezierCurveTo(787,105,849,119,849,120);
 	ctx.stroke();
+	ctx.fill();
 	//SELECT
 	ctx.strokeStyle = ControllerDrawSettings.sel_start_button_outline_color;
 	ctx.fillStyle = ControllerDrawSettings.select_color;
@@ -226,24 +254,24 @@ const drawController = function() {
 	//START
 	ctx.fillStyle = ControllerDrawSettings.start_color;
 	ctx.beginPath();
-	ctx.moveTo(1000-271,154);
-	ctx.bezierCurveTo(1000-265,137,1000-270,129,1000-278,129);
-	ctx.bezierCurveTo(1000-283,129,1000-288,129,1000-292,149);
-	ctx.bezierCurveTo(1000-296,164,1000-295,167,1000-286,171);
-	ctx.bezierCurveTo(1000-277,171,1000-276,170,1000-271,154);
+	ctx.moveTo(729,154);
+	ctx.bezierCurveTo(735,137,730,129,722,129);
+	ctx.bezierCurveTo(717,129,712,129,708,149);
+	ctx.bezierCurveTo(704,164,705,167,714,171);
+	ctx.bezierCurveTo(723,171,724,170,729,154);
 	ctx.stroke();
 	ctx.fill();
 	//LSTICK
 	ctx.strokeStyle = ControllerDrawSettings.outline_color;
 	ctx.fillStyle = ControllerDrawSettings.lstick_color;
 	ctx.beginPath();
-	ctx.arc(349,381,55,0,2*Math.PI);
+	ctx.arc(ControllerDrawSettings.lstick_x_pos,ControllerDrawSettings.lstick_y_pos,55,0,2*Math.PI);
 	ctx.stroke();
 	ctx.fill();
 	//RSTICK
 	ctx.fillStyle = ControllerDrawSettings.rstick_color;
 	ctx.beginPath();
-	ctx.arc(651,381,55,0,2*Math.PI);
+	ctx.arc(ControllerDrawSettings.rstick_x_pos,ControllerDrawSettings.rstick_y_pos,55,0,2*Math.PI);
 	ctx.stroke();
 	ctx.fill();
 	//TRIANGLE
@@ -297,6 +325,25 @@ const drawController = function() {
 	ctx.lineTo(792-adder-2,184+adder-2);
 	ctx.lineTo(792,184-adder-2);
 	ctx.stroke();
+	//RT
+	ctx.strokeStyle = ControllerDrawSettings.outline_color;
+	ctx.fillStyle = ControllerDrawSettings.lt_color;
+	ctx.beginPath();
+	ctx.arc(100,60,40,0,2*Math.PI);
+	ctx.stroke();
+	ctx.fill();
+	//LT
+	ctx.fillStyle = ControllerDrawSettings.rt_color;
+	ctx.beginPath();
+	ctx.arc(900,60,40,0,2*Math.PI);
+	ctx.stroke();
+	ctx.fill();
+	//LT RT Text
+	ctx.font = "30px Helvetica";
+	ctx.fillStyle = ControllerDrawSettings.lt_text_color;
+	ctx.fillText("LT",85,72);
+	ctx.fillStyle = ControllerDrawSettings.rt_text_color;
+	ctx.fillText("RT",882,72);
 	//SCREENSHOT
 	ctx.strokeStyle = ControllerDrawSettings.outline_color;
 	ctx.fillStyle = ControllerDrawSettings.screenshot_color;
@@ -309,16 +356,19 @@ const drawController = function() {
 	ctx.fill();
 	//PS BUTTON
 	ctx.strokeStyle = ControllerDrawSettings.outline_color;
+	ctx.fillStyle = ControllerDrawSettings.ps_logo_color;
 		//RIGHT CURVE
 		ctx.beginPath();
 		ctx.moveTo(504,396);
 		ctx.bezierCurveTo(542,385,527,375,504,380);
 		ctx.stroke();
+		ctx.fill();
 	//Left curve
 	ctx.beginPath();
 	ctx.moveTo(492,375);
 	ctx.bezierCurveTo(463,383,464,396,492,389);
 	ctx.stroke();
+	ctx.fill();
 		//BIG P
 		ctx.beginPath();
 		//Top curvy part of P
@@ -334,6 +384,25 @@ const drawController = function() {
 		ctx.lineTo(504,374);
 		ctx.bezierCurveTo(505,379,515,380,517,372);
 		ctx.stroke();
+		ctx.fill();
+	//Right of P again for outlining with fill
+	ctx.strokeStyle = ControllerDrawSettings.ps_logo_outline_color;
+	ctx.beginPath();
+	ctx.moveTo(504,396);
+	ctx.lineTo(504,360)
+	ctx.stroke();
+	//Left of P again for outlining with fill
+	var tmp = ctx.strokeStyle;
+	ctx.strokeStyle = ControllerDrawSettings.outline_color;
+	if(ctx.strokeStyle != tmp) {
+		ctx.strokeStyle = tmp;
+		ctx.beginPath();
+		ctx.moveTo(504,396);
+		ctx.lineTo(504,360)
+		ctx.moveTo(492,350);
+		ctx.lineTo(492,393);
+		ctx.stroke();
+	}
 	//Left dash
 	ctx.beginPath();
 	ctx.moveTo(491,382);
@@ -362,10 +431,9 @@ const controllerDisconnector = function(e) {
 };
 
 const gamepadPoll = function() {
-	//debuginfo.innerHTML = JSON.stringify(controller.gamepad.buttons[0], null, 4);
-	//debuginfo.innerHTML = fullPropertyPrinter(controller.gamepad);
 	controller.updateGamepad();
-	debuginfo.innerHTML = fullPropertyPrinter(controller.rstick);
+	//debuginfo.innerHTML = fullPropertyPrinter(controller.a_dpad);
+	debuginfo.innerHTML = controller.a_dpad;
 	if (controller.x.pressed){
 		ControllerDrawSettings.x_color = "#2cff3c6b";
 	} else {
@@ -415,6 +483,77 @@ const gamepadPoll = function() {
 		ControllerDrawSettings.screenshot_color = "#66cd6b";
 	} else {
 		ControllerDrawSettings.screenshot_color = "#201A23";
+	}
+	if(controller.dpad_up || controller.dpad_up_right || controller.dpad_up_left){
+		ControllerDrawSettings.dpad_u_color = "#2cff3c6b";
+	} else {
+		ControllerDrawSettings.dpad_u_color = "#b1afafe6";
+	}
+	if(controller.dpad_down || controller.dpad_down_left || controller.dpad_down_right){
+		ControllerDrawSettings.dpad_d_color = "#2cff3c6b";
+	} else {
+		ControllerDrawSettings.dpad_d_color = "#b1afafe6";
+	}
+	if(controller.dpad_right || controller.dpad_up_right || controller.dpad_down_right){
+		ControllerDrawSettings.dpad_r_color = "#2cff3c6b";
+	} else {
+		ControllerDrawSettings.dpad_r_color = "#b1afafe6";
+	}
+	if(controller.dpad_left || controller.dpad_up_left || controller.dpad_down_left){
+		ControllerDrawSettings.dpad_l_color = "#2cff3c6b";
+	} else {
+		ControllerDrawSettings.dpad_l_color = "#b1afafe6";
+	}
+	if(controller.rb.pressed){
+		ControllerDrawSettings.rb_color = "#76cd7b";
+	} else {
+		ControllerDrawSettings.rb_color = "#201A23";
+	}
+	if(controller.lb.pressed){
+		ControllerDrawSettings.lb_color = "#76cd7b";
+	} else {
+		ControllerDrawSettings.lb_color = "#201A23";
+	}
+	if(controller.home.pressed){
+		ControllerDrawSettings.ps_logo_color = "#76cd7b";
+		ControllerDrawSettings.ps_logo_outline_color = ControllerDrawSettings.background_color;
+	} else {
+		ControllerDrawSettings.ps_logo_color = "#201A23";
+		ControllerDrawSettings.ps_logo_outline_color = ControllerDrawSettings.outline_color;
+	}
+	if(controller.n_lstick_lr != 0){
+		ControllerDrawSettings.lstick_x_pos = ControllerDrawSettings.lstick_x_pos_dead + controller.a_lstick_lr * ControllerDrawSettings.stick_movement_multiplier;
+	} else {
+		ControllerDrawSettings.lstick_x_pos = ControllerDrawSettings.lstick_x_pos_dead;
+	}
+	if(controller.n_lstick_ud != 0){
+		ControllerDrawSettings.lstick_y_pos = ControllerDrawSettings.lstick_y_pos_dead + controller.a_lstick_ud * ControllerDrawSettings.stick_movement_multiplier;
+	} else {
+		ControllerDrawSettings.lstick_y_pos = ControllerDrawSettings.lstick_y_pos_dead;
+	}
+	if(controller.n_rstick_lr != 0){
+		ControllerDrawSettings.rstick_x_pos = ControllerDrawSettings.rstick_x_pos_dead + controller.a_rstick_lr * ControllerDrawSettings.stick_movement_multiplier;
+	} else {
+		ControllerDrawSettings.rstick_x_pos = ControllerDrawSettings.rstick_x_pos_dead;
+	}
+	if(controller.n_rstick_ud != 0){
+		ControllerDrawSettings.rstick_y_pos = ControllerDrawSettings.rstick_y_pos_dead + controller.a_rstick_ud * ControllerDrawSettings.stick_movement_multiplier;
+	} else {
+		ControllerDrawSettings.rstick_y_pos = ControllerDrawSettings.rstick_y_pos_dead;
+	}
+	if(controller.n_lt){
+		ControllerDrawSettings.lt_color = `rgba(118, 205, 123, ${controller.n_lt}`;
+		ControllerDrawSettings.lt_text_color = ControllerDrawSettings.background_color;
+	} else {
+		ControllerDrawSettings.lt_color = "#201A23";
+		ControllerDrawSettings.lt_text_color = ControllerDrawSettings.outline_color;
+	}
+	if(controller.n_rt){
+		ControllerDrawSettings.rt_color = `rgba(118, 205, 123, ${controller.n_rt}`;
+		ControllerDrawSettings.rt_text_color = ControllerDrawSettings.background_color;
+	} else {
+		ControllerDrawSettings.rt_color = "#201A23";
+		ControllerDrawSettings.rt_text_color = ControllerDrawSettings.outline_color;
 	}
 };
 
