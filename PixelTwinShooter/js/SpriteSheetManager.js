@@ -36,6 +36,7 @@ class SpriteSheetManager {
         this.SpriteSheetList = new Map();
         this.imgLoaded = this.imgLoaded.bind(this);
         this.ctx = ctx;
+        ctx.imageSmoothingEnabled = false;
         this.#throwaway_callback = throwaway_callback;
     }
 
@@ -67,11 +68,17 @@ class SpriteSheetManager {
         if(index >= cur.cols*cur.rows){
             throw new Error("Requested unobtainable sprite.");
         }
-        if(!dWidth){
-            dWidth = cur.width;
-        }
-        if(!dHeight){
-            dHeight = cur.height;
+        if(!dHeight && dWidth){
+            //If only one scaling attribute is given take it as a scaling value
+            dHeight = Math.round(cur.height * dWidth);
+            dWidth = Math.round(cur.width * dWidth);
+        } else {
+            if(!dWidth){
+                dWidth = cur.width;
+            }
+            if(!dHeight){
+                dHeight = cur.height;
+            }
         }
         this.ctx.drawImage(cur.img, (index%cur.cols)*cur.width, Math.floor(index/cur.cols)*cur.height, cur.width, cur.height, dx, dy, dWidth, dHeight);
     }
