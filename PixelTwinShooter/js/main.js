@@ -12,19 +12,15 @@ ctx.fillRect(0,0,canvas.width,canvas.height);
 ctx.imageSmoothingEnabled = false;
 
 var ssm = new SpriteSheetManager(ctx);
-ssm.load(sprite_folder + "Sprite-0001.png", "player", 44, 44, 1, 2);
-ssm.defineAnimationLoop("player", 0, 1);
-ssm.load(sprite_folder + "green.png", "green", 64,72,4,3);
-ssm.defineAnimationLoop("green", 0, 11);
-ssm.load(sprite_folder + "PlayerAttack01.png", "knight", 32,32,1,6);
-ssm.defineAnimationLoop("knight", 0, 5);
-ssm.load(sprite_folder + "bow_test.png", "bow", 34,34,1,1);
+ssm.load(sprite_folder + "RedRidingHoodMovement.png", "player", 34, 34, 1, 8);
+ssm.defineAnimationLoop("player", 0, 7);
+var char = new CharacterController(window, ssm, "player");
 ssm.whenFinishedLoading = initGame;
 
 ctx.fillStyle = "red";
 
 function initGame() {
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "#00aa00";
     ctx.fillRect(0,0,canvas.width,canvas.height);
     setInterval(drawBoiLoop, 250);
 }
@@ -34,10 +30,7 @@ function drawBoiLoop() {
 }
 
 function animate() {
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "#005500";
     ctx.fillRect(0,0,canvas.width,canvas.height);
-    ssm.drawNext("player",10,10,64,64);
-    ssm.drawNext("green",100,100, 64, 64);
-    ssm.drawNext("knight",500,400,200,200)
-    ssm.drawSprite("bow",0,300,400);
+    ssm.drawNext("player",canvas.width/2-34/2,canvas.height/2-34/2,1.5);
 }
