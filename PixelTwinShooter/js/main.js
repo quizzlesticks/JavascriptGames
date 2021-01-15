@@ -5,9 +5,12 @@ const sprite_folder = "./Spritesheets/";
 
 win.clearWindow("red");
 
-ssm.load(sprite_folder + "RedRidingHoodMovement.png", "RedRidingHoodMovement", 34, 34, 1, 8);
-ssm.load(sprite_folder + "RedRidingHoodAttack.png", "RedRidingHoodAttack", 46, 34, 4, 2);
-var char = new CharacterController(win, "RedRidingHoodMovement", "RedRidingHoodAttack");
+//ssm.load(sprite_folder + "RedRidingHoodMovement.png", "RedRidingHoodMovement", 34, 34, 1, 8);
+//ssm.load(sprite_folder + "RedRidingHoodAttack.png", "RedRidingHoodAttack", 46, 34, 4, 2);
+//var char = new CharacterController(win, "RedRidingHoodMovement", "RedRidingHoodAttack");
+ssm.load(sprite_folder + "SciGuyMovement.png", "SciGuyMovement", 34, 34, 4, 3);
+ssm.load(sprite_folder + "SciGuyAttack.png", "SciGuyAttack", 34, 34, 4, 2);
+var char = new CharacterController(win, "SciGuyMovement", "SciGuyAttack");
 ssm.whenFinishedLoading = initGame;
 
 function initGame() {
