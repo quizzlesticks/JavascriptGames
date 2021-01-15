@@ -36,7 +36,6 @@ class SpriteSheetManager {
         this.SpriteSheetList = new Map();
         this.imgLoaded = this.imgLoaded.bind(this);
         this.ctx = ctx;
-        ctx.imageSmoothingEnabled = false;
         this.#throwaway_callback = throwaway_callback;
     }
 

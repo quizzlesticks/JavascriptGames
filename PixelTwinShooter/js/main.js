@@ -1,36 +1,25 @@
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext("2d");
-
-canvas.width = 1000;
-canvas.height = 800;
-
+const win = new WindowManager();
+const gui = new GuiController(win);
+const ssm = win.ssm;
 const sprite_folder = "./Spritesheets/";
-const github_link = "https://raw.githubusercontent.com/quizzlesticks/JavascriptGames/master/PixelTwinShooter/Spritesheets/";
 
-ctx.fillStyle = "red";
-ctx.fillRect(0,0,canvas.width,canvas.height);
-ctx.imageSmoothingEnabled = false;
+win.clearWindow("red");
 
-var ssm = new SpriteSheetManager(ctx);
-ssm.load(sprite_folder + "RedRidingHoodMovement.png", "player", 34, 34, 1, 8);
-ssm.defineAnimationLoop("player", 0, 7);
-var char = new CharacterController(window, ssm, "player");
+ssm.load(sprite_folder + "RedRidingHoodMovement.png", "player_moving", 34, 34, 1, 8);
+ssm.load(sprite_folder + "RedRidingHoodAttack.png", "player_attack", 46, 34, 4, 2);
+var char = new CharacterController(win, "player_moving", "player_attack");
 ssm.whenFinishedLoading = initGame;
 
-ctx.fillStyle = "red";
-
 function initGame() {
-    ctx.fillStyle = "#00aa00";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    setInterval(drawBoiLoop, 250);
+    setInterval(loop, 250);
 }
 
-function drawBoiLoop() {
+function loop() {
     window.requestAnimationFrame(animate);
 }
 
 function animate() {
-    ctx.fillStyle = "#005500";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ssm.drawNext("player",canvas.width/2-34/2,canvas.height/2-34/2,2);
+    win.clearWindow("#00aa00");
+    char.draw();
+    gui.draw();
 }
