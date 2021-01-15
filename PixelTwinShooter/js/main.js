@@ -32,5 +32,5 @@ function drawBoiLoop() {
 function animate() {
     ctx.fillStyle = "#005500";
     ctx.fillRect(0,0,canvas.width,canvas.height);
-    ssm.drawNext("player",canvas.width/2-34/2,canvas.height/2-34/2,1.5);
+    ssm.drawNext("player",canvas.width/2-34/2,canvas.height/2-34/2,2);
 }
