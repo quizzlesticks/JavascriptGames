@@ -1,14 +1,9 @@
 class CharacterController {
 
-    #states = {"KeyS": false,
+    #key_states = {"KeyS": false,
                "KeyD": false,
                "KeyA": false,
                "KeyW": false};
-
-    #animations = {"KeyS": {start: 0, stop: 1},
-                   "KeyD": {start: 2, stop: 3},
-                   "KeyA": {start: 4, stop: 5},
-                   "KeyW": {start: 6, stop: 7}};
 
     #mousedown = false;
     #position = { real: { moving: {x: undefined, y: undefined},
@@ -27,10 +22,19 @@ class CharacterController {
     #_moving_name;
     #_attacking_name;
 
+    #_animation_profile;
+
     constructor(window_manager, moving_name, attacking_name, x=0, y=0, scale=0) {
         this.#_win = window_manager;
         this.#_moving_name = moving_name;
         this.#_attacking_name = attacking_name;
+        if(this.#_moving_name == "SciGuyMovement") {
+            this.#_animation_profile = SciGuyAnimProfile;
+        }else if(this.#_moving_name == "RedRidingHoodMovement"){
+            this.#_animation_profile = RedRidingHoodAnimProfile;
+        }else{
+            throw new Error("NO ANIM PROFILE");
+        }
         if(!scale){
             scale = this.#_win.scale;
         }
@@ -137,60 +141,59 @@ class CharacterController {
     updateAnimation(event) {
         if(event.type == "mousedown") {
             this.#mousedown = true;
+            this.#_zone = this.#findMouseZone(this.#_win.mouseToCanvas({x: event.clientX, y: event.clientY}));
+            this.#_win.ssm.defineAnimationLoop(this.#_attacking_name, this.#_animation_profile.attack_animations[this.#_zone].start, this.#_animation_profile.attack_animations[this.#_zone].stop);
+            return;
         }
         if(this.#mousedown) {
             if(event.type == "mousemove") {
                 var mp = this.#_win.mouseToCanvas({x: event.clientX, y: event.clientY});
                 var zone = this.#findMouseZone(mp);
                 if(zone != this.#_zone) {
-                    if (zone == "down") {
-                        this.#_win.ssm.defineAnimationLoop(this.#_attacking_name, 0, 1);
-                    } else if (zone == "right") {
-                        this.#_win.ssm.defineAnimationLoop(this.#_attacking_name, 2, 3);
-                    } else if (zone == "left") {
-                        this.#_win.ssm.defineAnimationLoop(this.#_attacking_name, 4, 5);
-                    } else if (zone == "up") {
-                        this.#_win.ssm.defineAnimationLoop(this.#_attacking_name, 6, 7);
-                    }
+                    this.#_win.ssm.defineAnimationLoop(this.#_attacking_name, this.#_animation_profile.attack_animations[zone].start, this.#_animation_profile.attack_animations[zone].stop);
                     this.#_zone = zone;
                 }
-            }else if(Object.keys(this.#states).includes(event.code)){
-                this.#states[event.code] = event.type == "keydown";
+            }else if(Object.keys(this.#key_states).includes(event.code)){
+                this.#key_states[event.code] = event.type == "keydown";
                 return;
             }else if(event.type == "mouseup") {
                 this.#mousedown = false;
-                for (state in this.#states){
-                    if(this.#states[state]){
-                        this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#animations[state].start, this.#animations[state].stop);
+                for (state in this.#key_states){
+                    if(this.#key_states[state]){
+                        this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#_animation_profile.move_animations[state].start, this.#_animation_profile.move_animations[state].stop);
                         return;
                     }
                 }
-                this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#animations["KeyS"].start, this.#animations["KeyS"].start);
+                this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#_animation_profile.idle_animations[this.#_zone].start, this.#_animation_profile.idle_animations[this.#_zone].stop);
+                return;
             }
         }
-        if(!Object.keys(this.#states).includes(event.code)){
+        if(event.type == "mousemove" || event.type == "mouseup" || !Object.keys(this.#key_states).includes(event.code)){
             return;
         }
         var state = event.type == "keydown";
-        if(state && !this.#states[event.code]) {
-            this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#animations[event.code].start, this.#animations[event.code].stop);
-            this.#states[event.code] = state;
+        if(state && !this.#key_states[event.code]) {
+            this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#_animation_profile.move_animations[event.code].start,
+                                                                   this.#_animation_profile.move_animations[event.code].stop);
+            this.#key_states[event.code] = state;
         }else if(!state) {
-            this.#states[event.code] = state;
-            for (state in this.#states){
-                if(this.#states[state]){
-                    this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#animations[state].start, this.#animations[state].stop);
+            this.#key_states[event.code] = state;
+            for (var st in this.#key_states){
+                if(this.#key_states[st]){
+                    this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#_animation_profile.move_animations[st].start,
+                                                                           this.#_animation_profile.move_animations[st].stop);
                     return;
                 }
             }
-            this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#animations[event.code].start, this.#animations[event.code].start);
+            this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#_animation_profile.idle_animations[event.code].start,
+                                                                   this.#_animation_profile.idle_animations[event.code].start);
         }
     }
 
     #findMouseZone(mp) {
         //If we are exactly on the player return zone 0 (right)
         if(mp.x == this.#position.centered_x && mp.y == this.#position.centered_y){
-            return "right";
+            return "KeyD";
         }
         //If we are under the top line (positive for canvas, in standard cartesian this is the one with negative slope and we are 'under' it)
         if(mp.y >= this.#topZoningLine(mp.x)) {
@@ -198,20 +201,20 @@ class CharacterController {
             //If we are under the bottom line
             if(mp.y >= this.#bottomZoningLine(mp.x)) {
                 //We are in zone 3
-                return "down";
+                return "KeyS";
             } else {
                 //Otherwise we must be in zone 2
-                return "left";
+                return "KeyA";
             }
         } else {
             //Otherwise we are in either zone 0 or 1
             //If we are under the bottom line
             if(mp.y >= this.#bottomZoningLine(mp.x)) {
                 //We are in zone 0
-                return "right";
+                return "KeyD";
             } else {
                 //Otherwise we are in zone 1
-                return "up";
+                return "KeyW";
             }
         }
     }
