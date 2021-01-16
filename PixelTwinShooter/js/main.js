@@ -1,7 +1,8 @@
 const win = new WindowManager();
+//const sock = new SocketHandler();
 const gui = new GuiController(win);
 const ssm = win.ssm;
-const sprite_folder = "./Spritesheets/";
+const sprite_folder = "/spritesheets/";
 
 win.clearWindow("red");
 
