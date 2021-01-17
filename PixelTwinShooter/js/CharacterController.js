@@ -5,6 +5,7 @@ class CharacterController{
                "KeyW": false};
 
     #_mousedown = false;
+    #_camerapos = {x: undefined, y: undefined};
     #pos = {x: undefined, y: undefined};
 
     #_mouse_zoning = {slope: undefined, top_b: undefined, bottom_b: undefined};
@@ -17,7 +18,7 @@ class CharacterController{
 
     #_socket;
 
-    #_speed = 10;
+    #_speed = 4;
 
     constructor(window_manager, socket, player_class, id, x=0, y=0, scale=0) {
         this.#_win = window_manager;
@@ -28,6 +29,8 @@ class CharacterController{
             y = this.#_win.player_space_height/2;
         }
         this.#_animator = new CharacterAnimatable(window_manager, player_class, x, y);
+        this.#_camerapos.x = x;
+        this.#_camerapos.y = y;
         this.x = x;
         this.y = y;
         this.#_mouse_zoning.slope = this.#_win.player_space_height/this.#_win.player_space_width;
@@ -50,23 +53,27 @@ class CharacterController{
         return this.#pos.y;
     }
 
+    get camerapos() {
+        return this.#_camerapos;
+    }
+
     get pos() {
         return this.#pos;
     }
 
     set x(x) {
         this.#pos.x = x;
-        this.#_animator.x = x;
+        //this.#_animator.x = x;
     }
 
     set y(y) {
         this.#pos.y = y;
-        this.#_animator.y = y;
+        //this.#_animator.y = y;
     }
 
     set pos(p) {
         this.#pos = p;
-        this.#_animator.pos = p;
+        //this.#_animator.pos = p;
     }
 
     #_last_x_sent = undefined;
@@ -268,8 +275,8 @@ class NetworkCharacterController{
         this.#_animator.pos = p;
     }
 
-    draw() {
-        this.#_animator.draw();
+    draw(p) {
+        this.#_animator.draw(p);
     }
 
     updateAnimationAndPosition(last_state, pos) {

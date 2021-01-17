@@ -21,17 +21,18 @@ var game_initialized = false;
 
 function initGame() {
     game_initialized = true;
-    setInterval(animate, 250);
+    window.requestAnimationFrame(animate);
 }
 
 function animate() {
     win.clearWindow("#00aa00");
-    cm.drawAllCharacters();
+    cm.drawAllCharacters(sock.id);
     gui.draw();
     ssm.drawSprite("bow",0,win.player_space_width+25,600);
     ssm.drawSprite("bow",0,win.player_space_width+25+50,600);
     ssm.drawSprite("bow",0,win.player_space_width+25+100,600);
     ssm.drawSprite("bow",0,win.player_space_width+25+150,600);
+    window.requestAnimationFrame(animate);
 }
 
 sock.on('player_selected', newNetworkCharactor);
@@ -39,8 +40,6 @@ sock.on('player_left', deleteNetworkCharactor);
 sock.on('player_move', updateNetworkCharactor);
 
 function newNetworkCharactor(data){
-    console.log("NewCharPacket:")
-    console.log(data);
     var keys = Object.keys(data);
     var cur;
     for(var i = 0; i < keys.length; i++) {
@@ -53,15 +52,11 @@ function newNetworkCharactor(data){
 }
 
 function deleteNetworkCharactor(data){
-    console.log("DeletePacket:")
-    console.log(data);
     cm.removeNetworkCharacter(data);
 }
 
 function updateNetworkCharactor(data){
     if(game_initialized){
-        console.log("UpdatePosPacket:")
-        console.log(data);
-        cm.updateNetworkCharactorPosition(data.id, data.last_state, data.pos)
+        cm.updateNetworkCharactorPosition(data.id, data.last_state, data.pos);
     }
 }

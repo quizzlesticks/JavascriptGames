@@ -32,10 +32,16 @@ class CharacterManager {
         delete this.#_char_list[id];
     }
 
-    drawAllCharacters() {
+    drawAllCharacters(id) {
+        var p = this.#_char_list[id].pos;
+        var cp = this.#_char_list[id].camerapos;
+        var np = {x: cp.x - p.x, y: cp.y - p.y};
         var keys = Object.keys(this.#_char_list);
         for(var i = 0; i < keys.length; i++) {
-            this.#_char_list[keys[i]].draw();
+            if(keys[i] != id){
+                this.#_char_list[keys[i]].draw(np);
+            }
         }
+        this.#_char_list[id].draw();
     }
 }
