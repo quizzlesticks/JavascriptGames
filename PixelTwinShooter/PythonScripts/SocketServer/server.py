@@ -7,26 +7,39 @@ sio = socketio.AsyncServer()
 app = web.Application()
 sio.attach(app)
 
+connected_users = {}
+
 async def index(request):
     print(request)
     with open('../../pixelshooter.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 
-@sio.on('message')
-def handleMessage(sid, data):
-    print("Message: " + str(sid) + ": " + str(data))
+@sio.on('player_selected')
+async def player_selected(sid, data):
+    data['id'] = sid
+    connected_users[str(sid)] = data
+    await sio.emit('player_selected', connected_users, room='main_lobby')
 
-@sio.on('player_pos_update')
-def handleMessage(sid, data):
-    print("Player_pos_update: " + sid + ": " + str(data))
+@sio.on('player_move')
+async def player_move(sid, data):
+    connected_users[str(sid)]["pos"] = data["pos"]
+    connected_users[str(sid)]["last_state"] = data["last_state"]
+    data['id'] = sid
+    await sio.emit('player_move', data, room='main_lobby', skip_sid=sid)
+
 
 @sio.event
 def connect(sid, environ):
         print("connect", sid)
+        sio.enter_room(sid, 'main_lobby')
 
 @sio.event
-def disconnect(sid):
+async def disconnect(sid):
         print("disconnect", sid)
+        sio.leave_room(sid, 'main_lobby')
+        if(str(sid) in connected_users):
+            del connected_users[str(sid)]
+        await sio.emit('player_left', sid, room='main_lobby')
 
 app.router.add_get('/', index)
 app.router.add_static('/css/', path='../../css')

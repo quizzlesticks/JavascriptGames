@@ -108,6 +108,7 @@ class CharacterAnimatable {
     #_move;
     #_attack;
     #_cur_animatable;
+    #last_state = {state: "idle", key: "KeyS"};
 
     #_win;
     constructor(win, player_class, px, py, scale=0) {
@@ -123,27 +124,42 @@ class CharacterAnimatable {
         this.#_cur_animatable = this.#_idle;
     }
 
+    get last_state() {
+        return this.#last_state;
+    }
+
     draw() {
         this.#_cur_animatable.drawNext();
     }
 
     animate(type, key) {
+        if(type == this.#last_state.state && key == this.#last_state.key){
+            return;
+        }
         switch(type) {
             case "attack":
                 this.#_cur_animatable = this.#_attack;
                 this.#_attack.defineAnimationLoopFromKey(key);
+                this.#last_state.state = "attack";
+                this.#last_state.key = key;
                 break;
             case "idle":
                 this.#_cur_animatable = this.#_idle;
                 this.#_idle.defineAnimationLoopFromKey(key);
+                this.#last_state.state = "idle";
+                this.#last_state.key = key;
                 break;
             case "move":
                 this.#_cur_animatable = this.#_move;
                 this.#_move.defineAnimationLoopFromKey(key);
+                this.#last_state.state = "move";
+                this.#last_state.key = key;
                 break;
             default:
                 this.#_cur_animatable = this.#_idle;
                 this.#_idle.defineAnimationLoopFromKey("KeyS");
+                this.#last_state.state = "idle";
+                this.#last_state.key = "KeyS";
         }
     }
 
