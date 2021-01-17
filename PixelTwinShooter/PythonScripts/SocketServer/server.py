@@ -12,8 +12,16 @@ async def index(request):
     with open('../../pixelshooter.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 
+@sio.on('message')
+def handleMessage(sid, data):
+    print("Message: " + str(sid) + ": " + str(data))
+
+@sio.on('player_pos_update')
+def handleMessage(sid, data):
+    print("Player_pos_update: " + sid + ": " + str(data))
+
 @sio.event
-def connect(sid, environ, auth):
+def connect(sid, environ):
         print("connect", sid)
 
 @sio.event
