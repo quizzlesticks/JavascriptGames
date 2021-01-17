@@ -6,6 +6,8 @@ class AnimatableClass {
     #_animloop_start = 0;
     #_animloop_cur = 0;
     #_animloop_end = 0;
+    #_frame_delay = 0;
+    #_frame_delay_cur = 0;
     #position = { real: {x: undefined, y: undefined},
                   centered: {x: undefined, y: undefined}
                 };
@@ -16,6 +18,7 @@ class AnimatableClass {
     constructor(ssm, animation_profile, px, py, scale=0) {
         this.#_ssm = ssm;
         this.#_animation_profile = animation_profile;
+        this.#_frame_delay = this.#_animation_profile.frame_delay;
         if(!scale){
             scale = this.#_animation_profile.default_scale;
         }
@@ -86,9 +89,26 @@ class AnimatableClass {
         this.#_ssm.drawSprite(this.#_animation_profile.id, index, this.real_x, this.real_y, this.#scale);
     }
 
+    drawNextRelative(rx, ry) {
+        //this.#_ssm.drawSprite(this.#_animation_profile.id, this.#_animloop_cur, this.real_x, this.real_y, this.#scale);
+        this.#_ssm.drawSprite(this.#_animation_profile.id, this.#_animloop_cur, this.x + rx - this.#_x_centering_offset, this.y + ry - this.#_y_centering_offset, this.#scale);
+        this.#_frame_delay_cur += 1;
+        if(this.#_frame_delay_cur > this.#_frame_delay){
+            this.#_animloop_cur += 1;
+            this.#_frame_delay_cur = 0;
+        }
+        if(this.#_animloop_cur > this.#_animloop_end){
+            this.#_animloop_cur = this.#_animloop_start;
+        }
+    }
+
     drawNext() {
         this.#_ssm.drawSprite(this.#_animation_profile.id, this.#_animloop_cur, this.real_x, this.real_y, this.#scale);
-        this.#_animloop_cur += 1;
+        this.#_frame_delay_cur += 1;
+        if(this.#_frame_delay_cur > this.#_frame_delay){
+            this.#_animloop_cur += 1;
+            this.#_frame_delay_cur = 0;
+        }
         if(this.#_animloop_cur > this.#_animloop_end){
             this.#_animloop_cur = this.#_animloop_start;
         }
@@ -128,8 +148,13 @@ class CharacterAnimatable {
         return this.#last_state;
     }
 
-    draw() {
-        this.#_cur_animatable.drawNext();
+    draw(p=undefined) {
+        if(!p) {
+            this.#_cur_animatable.drawNext();
+        }
+        if(p) {
+            this.#_cur_animatable.drawNextRelative(p.x,p.y);
+        }
     }
 
     animate(type, key) {
