@@ -1,33 +1,67 @@
 const win = new WindowManager();
-const sock = new SocketHandler();
+const sock = io('http://192.168.1.7:8080');
 const gui = new ItemGui(win);
+const cm = new CharacterManager(win);
 const ssm = win.ssm;
 
-var char;
 ssm.loadAllCharacterClasses(AnimationProfiles);
 const char_select = new CharSelectGui(win, charSelected);
 
 char_select.start();
-//sock.send('message');
-//sock.emit('player_pos_update', {x:0,y:0});
 
 function charSelected(){
-    char = new CharacterController(win, char_select.selected_char, sock.id);
+    var you = cm.addPlayerCharacter(sock, char_select.selected_char, sock.id);
+    sock.emit('player_selected', {char_select: char_select.selected_char, pos: you.pos, last_state: {state: "idle", key: "KeyS"}});
     ssm.load("/Spritesheets/bow_test.png", "bow", 34, 34, 1, 1);
     ssm.whenFinishedLoading = initGame;
     delete char_select;
 }
 
+var game_initialized = false;
+
 function initGame() {
+    game_initialized = true;
     setInterval(animate, 250);
 }
 
 function animate() {
     win.clearWindow("#00aa00");
-    char.draw();
+    cm.drawAllCharacters();
     gui.draw();
-    //ssm.drawSprite("bow",0,win.player_space_width+25,600);
-    //ssm.drawSprite("bow",0,win.player_space_width+25+50,600);
-    //ssm.drawSprite("bow",0,win.player_space_width+25+100,600);
-    //ssm.drawSprite("bow",0,win.player_space_width+25+150,600);
+    ssm.drawSprite("bow",0,win.player_space_width+25,600);
+    ssm.drawSprite("bow",0,win.player_space_width+25+50,600);
+    ssm.drawSprite("bow",0,win.player_space_width+25+100,600);
+    ssm.drawSprite("bow",0,win.player_space_width+25+150,600);
+}
+
+sock.on('player_selected', newNetworkCharactor);
+sock.on('player_left', deleteNetworkCharactor);
+sock.on('player_move', updateNetworkCharactor);
+
+function newNetworkCharactor(data){
+    console.log("NewCharPacket:")
+    console.log(data);
+    var keys = Object.keys(data);
+    var cur;
+    for(var i = 0; i < keys.length; i++) {
+        if(keys[i] != sock.id) {
+            cur = data[keys[i]];
+            cm.addNetworkCharacter(cur.char_select, cur.id);
+            cm.updateNetworkCharactorPosition(cur.id, cur.last_state, cur.pos);
+        }
+    }
+}
+
+function deleteNetworkCharactor(data){
+    console.log("DeletePacket:")
+    console.log(data);
+    cm.removeNetworkCharacter(data);
+}
+
+function updateNetworkCharactor(data){
+    if(game_initialized){
+        console.log("UpdatePosPacket:")
+        console.log(data);
+        cm.updateNetworkCharactorPosition(data.id, data.last_state, data.pos)
+    }
 }

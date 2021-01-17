@@ -13,8 +13,16 @@ class CharacterController{
 
     #_animator;
 
-    constructor(window_manager, player_class, id, x=0, y=0, scale=0) {
+    #_id;
+
+    #_socket;
+
+    #_speed = 10;
+
+    constructor(window_manager, socket, player_class, id, x=0, y=0, scale=0) {
         this.#_win = window_manager;
+        this.#_socket = socket;
+        this.#_id = id;
         if(!x && !y) {
             x = this.#_win.player_space_width/2;
             y = this.#_win.player_space_height/2;
@@ -26,6 +34,7 @@ class CharacterController{
         this.#_mouse_zoning.top_b = this.#pos.y - this.#_mouse_zoning.slope * this.#pos.x;
         this.#_mouse_zoning.bottom_b = this.#pos.y + this.#_mouse_zoning.slope * this.#pos.x - this.#_win.player_space_height;
         this.updateAnimation = this.updateAnimation.bind(this);
+        this.draw = this.draw.bind(this);
         window.addEventListener("keydown", this.updateAnimation);
         window.addEventListener("keyup", this.updateAnimation);
         window.addEventListener("mousedown", this.updateAnimation);
@@ -60,8 +69,33 @@ class CharacterController{
         this.#_animator.pos = p;
     }
 
+    #_last_x_sent = undefined;
+    #_last_y_sent = undefined;
+    #_last_state_sent = undefined;
+    #_last_key_sent = undefined;
     draw() {
+        if(this.#_key_states["KeyA"]) {
+            this.x -= this.#_speed;
+        }
+        if(this.#_key_states["KeyD"]) {
+            this.x += this.#_speed;
+        }
+        if(this.#_key_states["KeyS"]) {
+            this.y += this.#_speed;
+        }
+        if(this.#_key_states["KeyW"]) {
+            this.y -= this.#_speed;
+        }
         this.#_animator.draw();
+
+        var last_state = this.#_animator.last_state;
+        if(this.pos.x != this.#_last_x_sent || this.pos.y != this.#_last_y_sent || last_state.state != this.#_last_state_sent || last_state.key != this.#_last_key_sent) {
+            this.#_socket.emit("player_move", {last_state: this.#_animator.last_state, pos: this.pos});
+            this.#_last_x_sent = this.pos.x;
+            this.#_last_y_sent = this.pos.y;
+            this.#_last_state_sent = last_state.state;
+            this.#_last_key_sent = last_state.key;
+        }
         if(this.#_win.debug) {
             //intersecting lines on player
             var ctx = this.#_win.context;
@@ -184,5 +218,62 @@ class CharacterController{
 
     #bottomZoningLine(x) {
         return this.#_win.player_space_height - this.#_mouse_zoning.slope*x + this.#_mouse_zoning.bottom_b;
+    }
+}
+
+class NetworkCharacterController{
+    #_mousedown = false;
+    #pos = {x: undefined, y: undefined};
+
+    #_win;
+
+    #_animator;
+
+    constructor(window_manager, player_class, id, x=0, y=0, scale=0) {
+        this.#_win = window_manager;
+        if(!x && !y) {
+            x = this.#_win.player_space_width/2;
+            y = this.#_win.player_space_height/2;
+        }
+        this.#_animator = new CharacterAnimatable(window_manager, player_class, x, y);
+        this.x = x;
+        this.y = y;
+        this.draw = this.draw.bind(this);
+    }
+
+    get x() {
+        return this.#pos.x;
+    }
+
+    get y() {
+        return this.#pos.y;
+    }
+
+    get pos() {
+        return this.#pos;
+    }
+
+    set x(x) {
+        this.#pos.x = x;
+        this.#_animator.x = x;
+    }
+
+    set y(y) {
+        this.#pos.y = y;
+        this.#_animator.y = y;
+    }
+
+    set pos(p) {
+        this.#pos = p;
+        this.#_animator.pos = p;
+    }
+
+    draw() {
+        this.#_animator.draw();
+    }
+
+    updateAnimationAndPosition(last_state, pos) {
+        this.#_animator.animate(last_state.state, last_state.key);
+        this.pos = pos;
     }
 }
