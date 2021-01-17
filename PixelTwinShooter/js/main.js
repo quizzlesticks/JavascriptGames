@@ -1,7 +1,8 @@
 const win = new WindowManager();
+const sock = new SocketHandler();
 const gui = new GuiController(win);
 const ssm = win.ssm;
-const sprite_folder = "./Spritesheets/";
+const sprite_folder = "/spritesheets/";
 
 win.clearWindow("red");
 
@@ -14,6 +15,8 @@ var char = new CharacterController(win, "SciGuyMovement", "SciGuyAttack");
 ssm.load(sprite_folder + "bow_test.png", "bow", 34, 34, 1, 1);
 ssm.whenFinishedLoading = initGame;
 
+sock.send('message');
+sock.emit('player_pos_update', {x:0,y:0});
 function initGame() {
     setInterval(loop, 250);
 }
