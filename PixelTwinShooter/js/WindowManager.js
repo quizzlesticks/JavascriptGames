@@ -8,6 +8,7 @@ class WindowManager {
     #_smoothing;
     #_default_scale = 2;
     #_debug = false;
+    #_spritefolder = "/Spritesheets";
 
     constructor(width=1000, height=800, gui_width=250, smoothing=false) {
         this.#_canvas = document.getElementById('canvas');
@@ -30,6 +31,10 @@ class WindowManager {
         this.#_context.fillStyle = color;
         this.#_context.fillRect(0,0,canvas.width,canvas.height);
         this.#_context.restore();
+    }
+
+    get spritefolder() {
+        return this.#_spritefolder;
     }
 
     get debug() {

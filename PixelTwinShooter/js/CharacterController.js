@@ -1,60 +1,31 @@
-class CharacterController {
-
-    #key_states = {"KeyS": false,
+class CharacterController{
+    #_key_states = {"KeyS": false,
                "KeyD": false,
                "KeyA": false,
                "KeyW": false};
 
-    #mousedown = false;
-    #position = { real: { moving: {x: undefined, y: undefined},
-                          attacking: {x: undefined, y: undefined}},
-                  centered: {x: undefined, y: undefined}
-                };
-    #x_centering_offset_moving;
-    #y_centering_offset_moving;
-    #x_centering_offset_attacking;
-    #y_centering_offset_attacking;
-    #mouse_zoning = {slope: undefined, top_b: undefined, bottom_b: undefined};
+    #_mousedown = false;
+    #pos = {x: undefined, y: undefined};
 
-    #_scale;
+    #_mouse_zoning = {slope: undefined, top_b: undefined, bottom_b: undefined};
 
     #_win;
-    #_moving_name;
-    #_attacking_name;
 
-    #_animation_profile;
+    #_animator;
 
-    constructor(window_manager, moving_name, attacking_name, x=0, y=0, scale=0) {
+    constructor(window_manager, player_class, id, x=0, y=0, scale=0) {
         this.#_win = window_manager;
-        this.#_moving_name = moving_name;
-        this.#_attacking_name = attacking_name;
-        if(this.#_moving_name == "SciGuyMovement") {
-            this.#_animation_profile = SciGuyAnimProfile;
-        }else if(this.#_moving_name == "RedRidingHoodMovement"){
-            this.#_animation_profile = RedRidingHoodAnimProfile;
-        }else{
-            throw new Error("NO ANIM PROFILE");
-        }
-        if(!scale){
-            scale = this.#_win.scale;
-        }
-        this.#_scale = scale;
-        this.#x_centering_offset_moving = this.#_win.ssm.getSheet(this.#_moving_name).width*this.#_scale/2;
-        this.#y_centering_offset_moving = this.#_win.ssm.getSheet(this.#_moving_name).height*this.#_win.scale/2;
-        this.#x_centering_offset_attacking = this.#_win.ssm.getSheet(this.#_attacking_name).width*this.#_scale/2;
-        this.#y_centering_offset_attacking = this.#_win.ssm.getSheet(this.#_attacking_name).height*this.#_win.scale/2
         if(!x && !y) {
             x = this.#_win.player_space_width/2;
             y = this.#_win.player_space_height/2;
         }
+        this.#_animator = new CharacterAnimatable(window_manager, player_class, x, y);
         this.x = x;
         this.y = y;
-        this.#mouse_zoning.slope = this.#_win.player_space_height/this.#_win.player_space_width;
-        this.#mouse_zoning.top_b = this.#position.centered.y - this.#mouse_zoning.slope * this.#position.centered.x;
-        this.#mouse_zoning.bottom_b = this.#position.centered.y + this.#mouse_zoning.slope * this.#position.centered.x - this.#_win.player_space_height;
+        this.#_mouse_zoning.slope = this.#_win.player_space_height/this.#_win.player_space_width;
+        this.#_mouse_zoning.top_b = this.#pos.y - this.#_mouse_zoning.slope * this.#pos.x;
+        this.#_mouse_zoning.bottom_b = this.#pos.y + this.#_mouse_zoning.slope * this.#pos.x - this.#_win.player_space_height;
         this.updateAnimation = this.updateAnimation.bind(this);
-        ssm.defineAnimationLoop(this.#_moving_name,0,0);
-        ssm.defineAnimationLoop(this.#_attacking_name,0,0);
         window.addEventListener("keydown", this.updateAnimation);
         window.addEventListener("keyup", this.updateAnimation);
         window.addEventListener("mousedown", this.updateAnimation);
@@ -62,65 +33,37 @@ class CharacterController {
         window.addEventListener("mouseup", this.updateAnimation);
     }
 
-    get real_x_moving() {
-        return this.#position.real.moving.x;
-    }
-
-    get real_y_moving() {
-        return this.#position.real.moving.y;
-    }
-
-    get real_x_attacking() {
-        return this.#position.real.attacking.x;
-    }
-
-    get real_y_attacking() {
-        return this.#position.real.attacking.y;
-    }
-
-    get centered_x() {
-        return this.#position.centered.x;
-    }
-
-    get centered_y() {
-        return this.#position.centered.y;
-    }
-
     get x() {
-        return this.#position.centered.x;
+        return this.#pos.x;
     }
 
     get y() {
-        return this.#position.centered.y;
+        return this.#pos.y;
+    }
+
+    get pos() {
+        return this.#pos;
     }
 
     set x(x) {
-        this.#position.centered.x = x;
-        this.#position.real.moving.x = x - this.#x_centering_offset_moving;
-        this.#position.real.attacking.x = x - this.#x_centering_offset_attacking;
+        this.#pos.x = x;
+        this.#_animator.x = x;
     }
 
     set y(y) {
-        this.#position.centered.y = y;
-        this.#position.real.moving.y = y - this.#y_centering_offset_moving;
-        this.#position.real.attacking.y = y - this.#y_centering_offset_attacking;
+        this.#pos.y = y;
+        this.#_animator.y = y;
     }
 
-    set scale(s) {
-        this.#_scale = s;
-    }
-
-    get scale() {
-        return this.#_scale;
+    set pos(p) {
+        this.#pos = p;
+        this.#_animator.pos = p;
     }
 
     draw() {
-        if(this.#mousedown) {
-            this.#_win.ssm.drawNext(this.#_attacking_name, this.#position.real.attacking.x, this.#position.real.attacking.y, this.#_scale);
-        } else {
-            this.#_win.ssm.drawNext(this.#_moving_name, this.#position.real.moving.x, this.#position.real.moving.y, this.#_scale);
-        }
+        this.#_animator.draw();
         if(this.#_win.debug) {
+            //intersecting lines on player
             var ctx = this.#_win.context;
             ctx.save();
             ctx.beginPath();
@@ -133,66 +76,82 @@ class CharacterController {
             ctx.moveTo(0,this.#bottomZoningLine(0));
             ctx.lineTo(this.#_win.player_space_width, this.#bottomZoningLine(this.#_win.player_space_width));
             ctx.stroke();
+            //shows keys
+            ctx.beginPath();
+            ctx.strokeStyle = "white";
+            ctx.fillStyle = "black";
+            ctx.strokeRect(70, 10, 50, 50);
+            if(this.#_key_states["KeyW"])
+                ctx.fillRect(70, 10, 50, 50);
+            ctx.strokeRect(10, 70, 50, 50);
+            if(this.#_key_states["KeyA"])
+                ctx.fillRect(10, 70, 50, 50);
+            ctx.strokeRect(70, 70, 50, 50);
+            if(this.#_key_states["KeyS"])
+                ctx.fillRect(70, 70, 50, 50);
+            ctx.strokeRect(130, 70, 50, 50);
+            if(this.#_key_states["KeyD"])
+                ctx.fillRect(130, 70, 50, 50);
             ctx.restore();
         }
     }
 
     #_zone = undefined;
     updateAnimation(event) {
-        if(event.type == "mousedown") {
-            this.#mousedown = true;
-            this.#_zone = this.#findMouseZone(this.#_win.mouseToCanvas({x: event.clientX, y: event.clientY}));
-            this.#_win.ssm.defineAnimationLoop(this.#_attacking_name, this.#_animation_profile.attack_animations[this.#_zone].start, this.#_animation_profile.attack_animations[this.#_zone].stop);
+        if(event.type == "keydown" && this.#_key_states[event.code]){
             return;
         }
-        if(this.#mousedown) {
+        if(event.type == "mousedown") {
+            this.#_mousedown = true;
+            this.#_zone = this.#findMouseZone(this.#_win.mouseToCanvas({x: event.clientX, y: event.clientY}));
+            this.#_animator.animate("attack", this.#_zone);
+            return;
+        }
+        if(this.#_mousedown) {
             if(event.type == "mousemove") {
                 var mp = this.#_win.mouseToCanvas({x: event.clientX, y: event.clientY});
                 var zone = this.#findMouseZone(mp);
                 if(zone != this.#_zone) {
-                    this.#_win.ssm.defineAnimationLoop(this.#_attacking_name, this.#_animation_profile.attack_animations[zone].start, this.#_animation_profile.attack_animations[zone].stop);
+                    this.#_animator.animate("attack", zone);
                     this.#_zone = zone;
                 }
-            }else if(Object.keys(this.#key_states).includes(event.code)){
-                this.#key_states[event.code] = event.type == "keydown";
+            }else if(Object.keys(this.#_key_states).includes(event.code)){
+                this.#_key_states[event.code] = event.type == "keydown";
                 return;
             }else if(event.type == "mouseup") {
-                this.#mousedown = false;
-                for (state in this.#key_states){
-                    if(this.#key_states[state]){
-                        this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#_animation_profile.move_animations[state].start, this.#_animation_profile.move_animations[state].stop);
+                this.#_mousedown = false;
+                for (state in this.#_key_states){
+                    if(this.#_key_states[state]){
+                        this.#_animator.animate("move", state);
                         return;
                     }
                 }
-                this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#_animation_profile.idle_animations[this.#_zone].start, this.#_animation_profile.idle_animations[this.#_zone].stop);
+                this.#_animator.animate("idle", this.#_zone);
                 return;
             }
         }
-        if(event.type == "mousemove" || event.type == "mouseup" || !Object.keys(this.#key_states).includes(event.code)){
+        if(event.type == "mousemove" || event.type == "mouseup" || !Object.keys(this.#_key_states).includes(event.code)){
             return;
         }
         var state = event.type == "keydown";
-        if(state && !this.#key_states[event.code]) {
-            this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#_animation_profile.move_animations[event.code].start,
-                                                                   this.#_animation_profile.move_animations[event.code].stop);
-            this.#key_states[event.code] = state;
+        if(state && !this.#_key_states[event.code]) {
+            this.#_animator.animate("move", event.code);
+            this.#_key_states[event.code] = state;
         }else if(!state) {
-            this.#key_states[event.code] = state;
-            for (var st in this.#key_states){
-                if(this.#key_states[st]){
-                    this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#_animation_profile.move_animations[st].start,
-                                                                           this.#_animation_profile.move_animations[st].stop);
+            this.#_key_states[event.code] = state;
+            for (var st in this.#_key_states){
+                if(this.#_key_states[st]){
+                    this.#_animator.animate("move", st);
                     return;
                 }
             }
-            this.#_win.ssm.defineAnimationLoop(this.#_moving_name, this.#_animation_profile.idle_animations[event.code].start,
-                                                                   this.#_animation_profile.idle_animations[event.code].start);
+            this.#_animator.animate("idle", event.code);
         }
     }
 
     #findMouseZone(mp) {
         //If we are exactly on the player return zone 0 (right)
-        if(mp.x == this.#position.centered_x && mp.y == this.#position.centered_y){
+        if(mp.x == this.x && mp.y == this.y){
             return "KeyD";
         }
         //If we are under the top line (positive for canvas, in standard cartesian this is the one with negative slope and we are 'under' it)
@@ -220,10 +179,10 @@ class CharacterController {
     }
 
     #topZoningLine(x) {
-        return this.#mouse_zoning.slope*x + this.#mouse_zoning.top_b;
+        return this.#_mouse_zoning.slope*x + this.#_mouse_zoning.top_b;
     }
 
     #bottomZoningLine(x) {
-        return this.#_win.player_space_height - this.#mouse_zoning.slope*x + this.#mouse_zoning.bottom_b;
+        return this.#_win.player_space_height - this.#_mouse_zoning.slope*x + this.#_mouse_zoning.bottom_b;
     }
 }

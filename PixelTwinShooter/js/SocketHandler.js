@@ -10,4 +10,8 @@ class SocketHandler {
     send(msg) {
         this.socket.send(msg);
     }
+
+    get id() {
+        return this.socket.id;
+    }
 }
