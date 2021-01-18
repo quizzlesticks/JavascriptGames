@@ -66,7 +66,6 @@ def writeGrid(grid, filename="grid.out"):
         f.write(str(row)[1:][:-1])
         f.write("\n")
 
-
 def genImageCache(grid, filenumber):
     im = Image.new("RGB", (32*length, 32*height))
     tiles = Image.open("../../Spritesheets/tile.png")
