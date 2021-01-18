@@ -5,6 +5,7 @@ const cm = new CharacterManager(win);
 const ssm = win.ssm;
 
 ssm.loadAllCharacterClasses(AnimationProfiles);
+ssm.loadAllMaps();
 const char_select = new CharSelectGui(win, charSelected);
 
 char_select.start();

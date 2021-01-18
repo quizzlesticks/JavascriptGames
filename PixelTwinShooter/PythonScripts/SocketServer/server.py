@@ -1,6 +1,6 @@
 from aiohttp import web
 import socketio
-
+exec(open("../ConwayMapGen/gen.py").read())
 #sio = socketio.AsyncServer(async_mode='aiohttp')
 static_files = { '/': {'filename': '../../pixelshooter.html'}}
 sio = socketio.AsyncServer()
@@ -45,6 +45,7 @@ app.router.add_get('/', index)
 app.router.add_static('/css/', path='../../css')
 app.router.add_static('/js/', path='../../js')
 app.router.add_static('/Spritesheets', path='../../Spritesheets')
+app.router.add_static('/Map', path='../../Spritesheets/Map', show_index=True);
 
 if __name__ == '__main__':
     web.run_app(app)

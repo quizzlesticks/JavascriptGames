@@ -81,6 +81,10 @@ def genImageCache(grid, filenumber):
             else:
                 im.paste(tile2, box)
     im.save("../../Spritesheets/Map/Map" + str(filenumber) + ".png")
+    f = open("../../Spritesheets/Map/width=" + str(32*length), 'w')
+    f.close();
+    f = open("../../Spritesheets/Map/height=" + str(32*height), 'w')
+    f.close();
 
 #main
 if __name__ == "__main__":
