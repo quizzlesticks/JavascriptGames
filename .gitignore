@@ -1,1 +1,3 @@
-Spritesheets/Map/Map*.png
+Spritesheets/Map/*
+
+!Spritesheets/Map/.gitkeep
