@@ -1,6 +1,6 @@
 from aiohttp import web
 import socketio
-exec(open("../ConwayMapGen/gen.py").read())
+#exec(open("../ConwayMapGen/gen.py").read())
 #sio = socketio.AsyncServer(async_mode='aiohttp')
 static_files = { '/': {'filename': '../../pixelshooter.html'}}
 sio = socketio.AsyncServer()

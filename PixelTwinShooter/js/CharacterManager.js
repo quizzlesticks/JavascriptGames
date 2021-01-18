@@ -2,9 +2,14 @@ class CharacterManager {
     #_char_list;
     #_id_list;
     #_win;
+    #player;
     constructor(win) {
         this.#_win = win;
         this.#_char_list = {};
+    }
+
+    get player() {
+        return this.#player;
     }
 
     getCharacter(id) {
@@ -13,7 +18,7 @@ class CharacterManager {
 
     addPlayerCharacter(socket, player_class, id, x=0, y=0, scale=0) {
         this.#_char_list[id] = new CharacterController(this.#_win, socket, player_class, id, x, y, scale);
-        return this.#_char_list[id];
+        this.#player = this.#_char_list[id];
     }
 
     addNetworkCharacter(player_class, id, x=0, y=0, scale=0) {
@@ -33,8 +38,8 @@ class CharacterManager {
     }
 
     drawAllCharacters(id) {
-        var p = this.#_char_list[id].pos;
-        var cp = this.#_char_list[id].camerapos;
+        var p = this.#player.pos;
+        var cp = this.#player.camerapos;
         var np = {x: cp.x - p.x, y: cp.y - p.y};
         var keys = Object.keys(this.#_char_list);
         for(var i = 0; i < keys.length; i++) {

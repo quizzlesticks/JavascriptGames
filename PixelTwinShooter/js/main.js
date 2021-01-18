@@ -3,16 +3,17 @@ const sock = io('http://192.168.1.7:8080');
 const gui = new ItemGui(win);
 const cm = new CharacterManager(win);
 const ssm = win.ssm;
+const map = new MapManager(ssm);
 
 ssm.loadAllCharacterClasses(AnimationProfiles);
-ssm.loadAllMaps();
+map.loadAllMaps();
 const char_select = new CharSelectGui(win, charSelected);
 
 char_select.start();
 
 function charSelected(){
-    var you = cm.addPlayerCharacter(sock, char_select.selected_char, sock.id);
-    sock.emit('player_selected', {char_select: char_select.selected_char, pos: you.pos, last_state: {state: "idle", key: "KeyS"}});
+    cm.addPlayerCharacter(sock, char_select.selected_char, sock.id);
+    sock.emit('player_selected', {char_select: char_select.selected_char, pos: cm.player.pos, last_state: {state: "idle", key: "KeyS"}});
     ssm.load("/Spritesheets/bow_test.png", "bow", 34, 34, 1, 1);
     ssm.whenFinishedLoading = initGame;
     delete char_select;
@@ -26,7 +27,9 @@ function initGame() {
 }
 
 function animate() {
-    win.clearWindow("#00aa00");
+    //just to see where the map tiling fails
+    win.clearWindow("#ff0000");
+    map.draw(cm.player.pos, cm.player.camerapos);
     cm.drawAllCharacters(sock.id);
     gui.draw();
     ssm.drawSprite("bow",0,win.player_space_width+25,600);

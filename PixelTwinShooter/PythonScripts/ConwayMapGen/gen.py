@@ -88,9 +88,9 @@ def genImageCache(grid, filenumber):
 
 #main
 if __name__ == "__main__":
-    for l in range(9):
-        length = 32
-        height = 26
+    for l in range(169):
+        length = 32*6
+        height = 26*6
         MAX_RAND_CHANCE = 0.9 #Any number greater or equal to this will start alive
         min_neighbor = 2 #Kill if less than
         max_neighbor = 10 #Kills if this many or more

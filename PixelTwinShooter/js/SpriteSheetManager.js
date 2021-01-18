@@ -65,27 +65,6 @@ class SpriteSheetManager {
         }
     }
 
-    loadAllMaps(){
-        var xhttp = new XMLHttpRequest();
-        xhttp.ssm = this;
-        xhttp.onreadystatechange = function() {
-            if(this.readyState == 4 && this.status == 200) {
-                var map_urls = this.responseText.match(/\B\/Map\/Map\d+.png/gm);
-                var width = Number(this.responseText.match(/height=\d+/)[0].slice(7));
-                var height = Number(this.responseText.match(/width=\d+/)[0].slice(6));
-                for (var i = 0; i < map_urls.length; i++) {
-                    this.ssm.load(map_urls[i], width, height, 1, 1);
-                }
-            } else if(this.readyState == 4 && this.status == 403){
-                throw new Error("Couldn't load map cache; Forbidden");
-            } else if(this.readyState == 4 && this.status == 404){
-                throw new Error("Couldn't load map cache; Not found");
-            }
-        };
-        xhttp.open("GET", "/Map", true);
-        xhttp.send();
-    }
-
     load(filename, id, width, height, rows, cols) {
         this.#finished_loading = false;
         this.#loading_count += 1;
