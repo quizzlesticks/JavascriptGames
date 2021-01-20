@@ -3,20 +3,21 @@ const sock = io('http://192.168.1.7:8080');
 const gui = new ItemGui(win);
 const cm = new CharacterManager(win);
 const ssm = win.ssm;
-const map = new MapManager(ssm);
+VoronoiDemo.init(win.canvas, 150);
+VoronoiDemo.render();
 
 ssm.loadAllCharacterClasses(AnimationProfiles);
-map.loadAllMaps();
 const char_select = new CharSelectGui(win, charSelected);
+//char_select.start();
 
-char_select.start();
 
+map.draw();
 function charSelected(){
     cm.addPlayerCharacter(sock, char_select.selected_char, sock.id);
     sock.emit('player_selected', {char_select: char_select.selected_char, pos: cm.player.pos, last_state: {state: "idle", key: "KeyS"}});
     ssm.load("/Spritesheets/bow_test.png", "bow", 34, 34, 1, 1);
     ssm.whenFinishedLoading = initGame;
-    delete char_select;
+    char_select = null; //free up memory, don't need it anymore
 }
 
 var game_initialized = false;
