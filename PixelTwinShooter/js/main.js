@@ -3,15 +3,20 @@ const sock = io('http://192.168.1.7:8080');
 const gui = new ItemGui(win);
 const cm = new CharacterManager(win);
 const ssm = win.ssm;
-VoronoiDemo.init(win.canvas, 150);
-VoronoiDemo.render();
+
+const map = new MapManager(win);
+
+win.clearWindow("white");
+
+map.randomize();
+map.drawTriangles();
+map.drawPoints();
 
 ssm.loadAllCharacterClasses(AnimationProfiles);
 const char_select = new CharSelectGui(win, charSelected);
 //char_select.start();
 
 
-map.draw();
 function charSelected(){
     cm.addPlayerCharacter(sock, char_select.selected_char, sock.id);
     sock.emit('player_selected', {char_select: char_select.selected_char, pos: cm.player.pos, last_state: {state: "idle", key: "KeyS"}});
