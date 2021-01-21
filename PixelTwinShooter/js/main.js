@@ -1,4 +1,5 @@
 const win = new WindowManager();
+Math.seedrandom("hello");
 const sock = io('http://192.168.1.7:8080');
 const gui = new ItemGui(win);
 const cm = new CharacterManager(win);
@@ -8,9 +9,10 @@ const map = new MapManager(win);
 
 win.clearWindow("white");
 
-map.randomize();
+map.randomize(30);
 map.drawTriangles();
-map.drawPoints();
+//map.drawPoints();
+//map.drawTwoTriangles();
 
 ssm.loadAllCharacterClasses(AnimationProfiles);
 const char_select = new CharSelectGui(win, charSelected);
