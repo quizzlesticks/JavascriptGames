@@ -5,7 +5,7 @@ class MapManager {
 	#voroni;
 	#points;
 	#_randomizer;
-	#_margin_bleed = 100;
+	#_margin_bleed = -15;
 
 	constructor(win) {
 		this.#_win = win;
@@ -142,7 +142,7 @@ class MapManager {
 			   }
 			this.#points.push([Math.round(rando[0])-this.#_margin_bleed/2, Math.round(rando[1])-this.#_margin_bleed/2]);
 		}
-		this.#_deli = Delaunator.from(this.#points);
+		this.#_deli = d3.Delaunay.from(this.#points);
 	}
 }
 
