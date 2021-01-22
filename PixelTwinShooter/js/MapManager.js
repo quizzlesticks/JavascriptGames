@@ -9,6 +9,7 @@ class MapManager {
 	constructor(win, radius=50) {
 		this.#_win = win;
 		this.randomize(radius);
+		this.relaxe(6);
 	}
 
 	get points() {
@@ -21,6 +22,30 @@ class MapManager {
 
 	get triangles() {
 		return this.#_deli.triangles;
+	}
+
+	get number_of_cells() {
+		return this.#_deli.points.length/2;
+	}
+
+	relaxe(times_to_relax=1) {
+		for(let n =0; n < times_to_relax; n++) {
+			for (var i = 0; i < this.number_of_cells; i++) {
+				const cell = this.#_voronoi.cellPolygon(i);
+				var x_sum = 0;
+				var y_sum = 0;
+				for (var j = 0; j < cell.length; j++) {
+					x_sum += cell[j][0];
+					y_sum += cell[j][1];
+				}
+				this.#_deli.points[i*2] = Math.round(x_sum/cell.length);
+				this.#_deli.points[i*2+1] = Math.round(y_sum/cell.length);
+			}
+			this.#_deli.update();
+			this.#_voronoi.update();
+		}
+		this.#_path.deli = new Path2D(this.#_deli.render());
+		this.#_path.voronoi = new Path2D(this.#_voronoi.render());
 	}
 
 	drawUnderCell(x, y) {
