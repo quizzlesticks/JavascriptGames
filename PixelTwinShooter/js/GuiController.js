@@ -101,6 +101,7 @@ class CharSelectGui {
     	ctx.fillStyle = "#bbb7b7";
     	ctx.fillText("RRH",this.#_win.width/2-this.#square_width/2-this.#gap/2, this.#_win.height/2);
         ctx.fillText("SG",this.#_win.width/2+this.#square_width/2+this.#gap/2, this.#_win.height/2);
+        ctx.fillText("Wizards keep that thang on them.",this.#_win.width/2, 200);
         ctx.restore();
 
     }
