@@ -581,12 +581,14 @@ class Voronoi {
       const t1 = triangles[i] * 2;
       const t2 = triangles[i + 1] * 2;
       const t3 = triangles[i + 2] * 2;
+
       const x1 = points[t1];
       const y1 = points[t1 + 1];
       const x2 = points[t2];
       const y2 = points[t2 + 1];
       const x3 = points[t3];
       const y3 = points[t3 + 1];
+
 
       const dx = x2 - x1;
       const dy = y2 - y1;
@@ -613,7 +615,6 @@ class Voronoi {
       circumcenters[j] = x;
       circumcenters[j + 1] = y;
     }
-
     // Compute exterior cell rays.
     let h = hull[hull.length - 1];
     let p0, p1 = h * 4;
@@ -969,8 +970,8 @@ class Delaunay {
       if (hull.length === 2) inedges[hull[1]] = 0;
     }
   }
-  voronoi(bounds) {
-    return new Voronoi(this, bounds);
+  voronoi(bounds, centeroids) {
+    return new Voronoi(this, bounds, centeroids);
   }
   *neighbors(i) {
     const {inedges, hull, _hullIndex, halfedges, triangles, collinear} = this;

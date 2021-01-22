@@ -1,6 +1,6 @@
 const win = new WindowManager();
 Math.seedrandom("hello");
-const sock = io('http://192.168.1.7:8080');
+const sock = io();
 const gui = new ItemGui(win);
 const cm = new CharacterManager(win);
 const ssm = win.ssm;
@@ -9,13 +9,21 @@ const map = new MapManager(win);
 
 win.clearWindow("white");
 
-map.randomize(30);
+win.clearWindow("white");
 map.drawTriangles();
-//map.drawPoints();
+map.drawCells();
+map.drawPoints();
+window.addEventListener("mousemove", animateCellDraw);
+
 //map.drawTwoTriangles();
 
+function animateCellDraw(evennt) {
+    var pos = win.mouseToCanvas({x: event.clientX, y: event.clientY});
+    map.drawUnderCell(pos.x, pos.y);
+}
+
 ssm.loadAllCharacterClasses(AnimationProfiles);
-const char_select = new CharSelectGui(win, charSelected);
+//const char_select = new CharSelectGui(win, charSelected);
 //char_select.start();
 
 
