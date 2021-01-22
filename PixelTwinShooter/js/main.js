@@ -4,36 +4,48 @@ const sock = io();
 const gui = new ItemGui(win);
 const cm = new CharacterManager(win);
 const ssm = win.ssm;
-
 const map = new MapManager(win);
 
-map.render();
 
+map.render();
+var map_image;
+createImageBitmap(win.canvas).then(assignMapImage);
+
+function assignMapImage(img) {
+    map_image = img;
+    game_initialized += 1
+}
 
 ssm.loadAllCharacterClasses(AnimationProfiles);
 const char_select = new CharSelectGui(win, charSelected);
 char_select.start();
-
 
 function charSelected(){
     cm.addPlayerCharacter(sock, char_select.selected_char, sock.id);
     sock.emit('player_selected', {char_select: char_select.selected_char, pos: cm.player.pos, last_state: {state: "idle", key: "KeyS"}});
     ssm.load("/Spritesheets/bow_test.png", "bow", 34, 34, 1, 1);
     ssm.whenFinishedLoading = initGame;
-    char_select = null; //free up memory, don't need it anymore
 }
 
-var game_initialized = false;
+const game_start = 2;
+var game_initialized = 0;
 
 function initGame() {
-    game_initialized = true;
-    window.requestAnimationFrame(animate);
+    game_initialized += 1;
 }
+
+window.requestAnimationFrame(animate);
 
 function animate() {
     //just to see where the map tiling fails
-    win.clearWindow("#ff0000");
-    map.draw(cm.player.pos, cm.player.camerapos);
+    if(game_initialized != game_start) {
+        window.requestAnimationFrame(animate);
+        return;
+    }
+    var p = cm.player.pos;
+    var cp = cm.player.camerapos;
+    var np = {x: cp.x - p.x, y: cp.y - p.y};
+    win.context.drawImage(map_image, 0,0, win.width, win.height, np.x*128,np.y*128, win.width*128, win.height*128);
     cm.drawAllCharacters(sock.id);
     gui.draw();
     ssm.drawSprite("bow",0,win.player_space_width+25,600);
@@ -64,7 +76,7 @@ function deleteNetworkCharactor(data){
 }
 
 function updateNetworkCharactor(data){
-    if(game_initialized){
+    if(game_initialized == game_start){
         cm.updateNetworkCharactorPosition(data.id, data.last_state, data.pos);
     }
 }

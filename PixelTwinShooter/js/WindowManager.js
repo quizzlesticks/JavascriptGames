@@ -37,6 +37,10 @@ class WindowManager {
         return this.#_spritefolder;
     }
 
+    set debug(d) {
+        this.#_debug = d;
+    }
+
     get debug() {
         return this.#_debug;
     }

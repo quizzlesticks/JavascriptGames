@@ -18,7 +18,7 @@ class CharacterController{
 
     #_socket;
 
-    #_speed = 20; //4
+    #_speed = 0.1; //4
 
     constructor(window_manager, socket, player_class, id, x=0, y=0, scale=0) {
         this.#_win = window_manager;
@@ -113,13 +113,13 @@ class CharacterController{
             ctx.lineTo(this.#_win.player_space_width, this.#topZoningLine(this.#_win.player_space_width));
             ctx.stroke();
             ctx.beginPath();
-            ctx.strokeStyle = "#ffffff";
+            ctx.strokeStyle = "#0000ff";
             ctx.moveTo(0,this.#bottomZoningLine(0));
             ctx.lineTo(this.#_win.player_space_width, this.#bottomZoningLine(this.#_win.player_space_width));
             ctx.stroke();
             //shows keys
             ctx.beginPath();
-            ctx.strokeStyle = "white";
+            ctx.strokeStyle = "black";
             ctx.fillStyle = "black";
             ctx.strokeRect(70, 10, 50, 50);
             if(this.#_key_states["KeyW"])
