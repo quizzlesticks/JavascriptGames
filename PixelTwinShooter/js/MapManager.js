@@ -6,7 +6,7 @@ class MapManager {
 	#_voronoi;
 	#_margin_bleed = -15;
 	#_regions;
-	#_region_descriptors = {ocean: 0, beach: 1};
+	#_region_descriptors = {ocean: 0, beach: 1, mountain_top: 2};
 	#_region_colors = [];
 
 	constructor(win, radius=50) {
@@ -17,6 +17,7 @@ class MapManager {
 		this.assignRegions();
 		this.#_region_colors[this.#_region_descriptors.ocean] = "#33ccffaa";
 		this.#_region_colors[this.#_region_descriptors.beach] = "#ffff66aa";
+		this.#_region_colors[this.#_region_descriptors.mountain_top] = "#281440aa";
 	}
 
 	get points() {
@@ -49,6 +50,19 @@ class MapManager {
 				}
 			}
 		}
+		//Everybody touching the ocean gets to be a beach
+		for(let cur_cell = 0; cur_cell < this.number_of_cells; cur_cell++) {
+			const neighbors = this.#_voronoi.neighbors(cur_cell);
+			for (var neighbor of neighbors) {
+				if(this.#_regions[neighbor] == this.#_region_descriptors.ocean && this.#_regions[cur_cell]  != this.#_region_descriptors.ocean) {
+					this.#_regions[cur_cell] = this.#_region_descriptors.beach;
+					break;
+				}
+			}
+		}
+		//The most middle zone should always be the mountain_top
+		this.#_regions[this.#_deli.find(width/2, height/2)] = this.#_region_descriptors.mountain_top;
+
 	}
 
 	relaxe(times_to_relax=1) {
@@ -96,10 +110,10 @@ class MapManager {
 		ctx.arc(this.points[point*2], this.points[point*2+1], 4, 0, Math.PI * 2);
 		ctx.fill();
 		ctx.fillStyle = "#00ff00";
-		var n = this.#_deli.neighbors(point);
-		for ( var i of n ) {
+		var neighbors = this.#_deli.neighbors(point);
+		for ( var neighbor of neighbors ) {
 			ctx.beginPath();
-			ctx.arc(this.points[i*2], this.points[i*2+1], 4, 0, Math.PI * 2);
+			ctx.arc(this.points[neighbor*2], this.points[neighbor*2+1], 4, 0, Math.PI * 2);
 			ctx.fill();
 		}
 		this.drawCellWithFill(point, "#00ffdc7a");
