@@ -7,6 +7,7 @@ class MapManager {
 	#_margin_bleed = -15;
 	#_regions;
 	#_region_descriptors = {ocean: 0, beach: 1};
+	#_region_colors = [];
 
 	constructor(win, radius=50) {
 		this.#_win = win;
@@ -14,6 +15,8 @@ class MapManager {
 		this.relaxe(6);
 		this.#_regions = new Array(this.number_of_cells);
 		this.assignRegions();
+		this.#_region_colors[this.#_region_descriptors.ocean] = "#33ccffaa";
+		this.#_region_colors[this.#_region_descriptors.beach] = "#ffff66aa";
 	}
 
 	get points() {
@@ -34,23 +37,17 @@ class MapManager {
 
 	assignRegions() {
 		//Assign ocean regions
-		//Start at the last cell and move back
 		//Assigning ocean to all cells that have a point on the wall.
-		var cur_cell = this.number_of_cells - 1;
 		const width = this.#_win.width;
 		const height = this.#_win.height;
-		while(cur_cell >= 0) {
+		for(let cur_cell = 0; cur_cell < this.number_of_cells; cur_cell++) {
 			const cell_vertices = this.#_voronoi.cellPolygon(cur_cell);
 			for (var i = 0; i < cell_vertices.length; i++) {
 				if(cell_vertices[i][0] == width || cell_vertices[i][0] == 0 || cell_vertices[i][1] == height || cell_vertices[i][1] == 0) {
-					this.#_regions[cur_cell = this.#_region_descriptors.ocean];
+					this.#_regions[cur_cell] = this.#_region_descriptors.ocean;
 					break;
 				}
 			}
-			if(this.#_regions[cur_cell] == undefined) {
-				break;
-			}
-			cur_cell--;
 		}
 	}
 
@@ -72,6 +69,14 @@ class MapManager {
 		}
 		this.#_path.deli = new Path2D(this.#_deli.render());
 		this.#_path.voronoi = new Path2D(this.#_voronoi.render());
+	}
+
+	drawRegions() {
+		for(var i = 0; i < this.number_of_cells; i++) {
+			if(this.#_regions[i] != undefined) {
+				this.drawCellWithFill(i, this.#_region_colors[this.#_regions[i]]);
+			}
+		}
 	}
 
 	drawUnderCell(x, y) {
@@ -97,19 +102,7 @@ class MapManager {
 			ctx.arc(this.points[i*2], this.points[i*2+1], 4, 0, Math.PI * 2);
 			ctx.fill();
 		}
-		var p = this.#_voronoi.cellPolygon(point);
-		ctx.fillStyle = "#00ffdc7a";
-		ctx.beginPath();
-		if(p.length > 0) {
-			ctx.moveTo(p[0][0], p[0][1]);
-		}
-		for (var i = 1; i < p.length; i++) {
-			ctx.lineTo(p[i][0],p[i][1]);
-		}
-		if(p.length > 0) {
-			ctx.lineTo(p[0][0], p[0][1]);
-			ctx.fill();
-		}
+		this.drawCellWithFill(point, "#00ffdc7a");
 		this.drawTriangles();
 		this.drawCells();
 		this.drawPoints();
@@ -121,6 +114,25 @@ class MapManager {
 		ctx.save();
 		ctx.strokeStyle = "black";
 		ctx.stroke(this.#_path.deli);
+		ctx.restore();
+	}
+
+	drawCellWithFill(cell, fill_color) {
+		const vertices = this.#_voronoi.cellPolygon(cell);
+		const ctx = this.#_win.context;
+		ctx.save();
+		ctx.fillStyle = fill_color;
+		ctx.beginPath();
+		if(vertices.length > 0) {
+			ctx.moveTo(vertices[0][0], vertices[0][1]);
+		}
+		for (var i = 1; i < vertices.length; i++) {
+			ctx.lineTo(vertices[i][0],vertices[i][1]);
+		}
+		if(vertices.length > 0) {
+			ctx.lineTo(vertices[0][0], vertices[0][1]);
+			ctx.fill();
+		}
 		ctx.restore();
 	}
 

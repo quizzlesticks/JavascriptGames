@@ -9,17 +9,11 @@ const map = new MapManager(win);
 
 win.clearWindow("white");
 
+map.drawRegions();
 map.drawTriangles();
 map.drawCells();
 map.drawPoints();
-window.addEventListener("mousemove", animateCellDraw);
 
-//map.drawTwoTriangles();
-
-function animateCellDraw(evennt) {
-    var pos = win.mouseToCanvas({x: event.clientX, y: event.clientY});
-    map.drawUnderCell(pos.x, pos.y);
-}
 
 ssm.loadAllCharacterClasses(AnimationProfiles);
 //const char_select = new CharSelectGui(win, charSelected);
