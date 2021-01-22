@@ -6,10 +6,11 @@ class MapManager {
 	#_voronoi;
 	#_margin_bleed = -15;
 	#_regions;
-	#_region_descriptors = {ocean: 0, beach: 1, mountain_top: 2};
+	#_region_descriptors = {ocean: 0, beach: 1, forest: 2, grasslands: 3,
+		                    highlands: 4, lowmountains: 5, mountain_top: 6};
 	#_region_colors = [];
 
-	constructor(win, radius=50) {
+	constructor(win, radius=30) {
 		this.#_win = win;
 		this.randomize(radius);
 		this.relaxe(6);
@@ -17,6 +18,10 @@ class MapManager {
 		this.assignRegions();
 		this.#_region_colors[this.#_region_descriptors.ocean] = "#33ccffaa";
 		this.#_region_colors[this.#_region_descriptors.beach] = "#ffff66aa";
+		this.#_region_colors[this.#_region_descriptors.forest] = "#007027aa";
+		this.#_region_colors[this.#_region_descriptors.grasslands] = "#7fba25aa";
+		this.#_region_colors[this.#_region_descriptors.highlands] = "#cfcf1baa";
+		this.#_region_colors[this.#_region_descriptors.lowmountains] = "#808080aa";
 		this.#_region_colors[this.#_region_descriptors.mountain_top] = "#281440aa";
 	}
 
@@ -36,6 +41,16 @@ class MapManager {
 		return this.#_deli.points.length/2;
 	}
 
+	render() {
+		this.#_win.clearWindow("white");
+		this.drawRegions();
+		if(this.#_win.debug) {
+			this.drawTriangles();
+			this.drawCells();
+			this.drawPoints();
+		}
+	}
+
 	assignRegions() {
 		//Assign ocean regions
 		//Assigning ocean to all cells that have a point on the wall.
@@ -50,19 +65,49 @@ class MapManager {
 				}
 			}
 		}
-		//Everybody touching the ocean gets to be a beach
+		//The most middle zone should always be the mountain_top
+		this.#_regions[this.#_deli.find(width/2, height/2)] = this.#_region_descriptors.mountain_top;
+		//Ensure that the beach isn't going out of the map
+		this.assignBasedOnNeighbors(this.#_region_descriptors.ocean, this.#_region_descriptors.ocean);
+		//Everybody touching the ocean now gets to be a beach
+		this.assignBasedOnNeighbors(this.#_region_descriptors.ocean, this.#_region_descriptors.beach);
+		//everbody touching the beach gets to be forest
+		this.assignBasedOnNeighbors(this.#_region_descriptors.beach, this.#_region_descriptors.forest);
+		this.assignBasedOnNeighbors(this.#_region_descriptors.forest, this.#_region_descriptors.forest);
+		//this.assignBasedOnNeighbors(this.#_region_descriptors.forest, this.#_region_descriptors.forest);
+		//everbody touching the forest gets to be grasslands
+		this.assignBasedOnNeighbors(this.#_region_descriptors.forest, this.#_region_descriptors.grasslands);
+		this.assignBasedOnNeighbors(this.#_region_descriptors.grasslands, this.#_region_descriptors.grasslands);
+		//this.assignBasedOnNeighbors(this.#_region_descriptors.grasslands, this.#_region_descriptors.grasslands);
+		//everbody touching the grasslands gets to be highlands
+		this.assignBasedOnNeighbors(this.#_region_descriptors.grasslands, this.#_region_descriptors.highlands);
+		this.assignBasedOnNeighbors(this.#_region_descriptors.highlands, this.#_region_descriptors.highlands);
+		//everbody touching the highlands gets to be lowmountains
+		this.assignBasedOnNeighbors(this.#_region_descriptors.highlands, this.#_region_descriptors.lowmountains);
+		//everybody left is high mountain
+		for(let cur_cell = 0; cur_cell < this.number_of_cells; cur_cell++) {
+			if(this.#_regions[cur_cell] == undefined) {
+				this.#_regions[cur_cell] = this.#_region_descriptors.mountain_top;
+			}
+		}
+	}
+
+	assignBasedOnNeighbors(neighbor_region, new_region) {
+		var copy_of_regions = new Array(this.number_of_cells);
+		for(let i = 0; i < this.number_of_cells; i++) {
+			if(this.#_regions[i] != undefined){
+				copy_of_regions[i] = this.#_regions[i];
+			}
+		}
 		for(let cur_cell = 0; cur_cell < this.number_of_cells; cur_cell++) {
 			const neighbors = this.#_voronoi.neighbors(cur_cell);
 			for (var neighbor of neighbors) {
-				if(this.#_regions[neighbor] == this.#_region_descriptors.ocean && this.#_regions[cur_cell]  != this.#_region_descriptors.ocean) {
-					this.#_regions[cur_cell] = this.#_region_descriptors.beach;
+				if(this.#_regions[cur_cell] == undefined && copy_of_regions[neighbor] == neighbor_region) {
+					this.#_regions[cur_cell] = new_region;
 					break;
 				}
 			}
 		}
-		//The most middle zone should always be the mountain_top
-		this.#_regions[this.#_deli.find(width/2, height/2)] = this.#_region_descriptors.mountain_top;
-
 	}
 
 	relaxe(times_to_relax=1) {

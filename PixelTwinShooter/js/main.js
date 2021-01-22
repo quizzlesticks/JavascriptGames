@@ -7,17 +7,12 @@ const ssm = win.ssm;
 
 const map = new MapManager(win);
 
-win.clearWindow("white");
-
-map.drawRegions();
-map.drawTriangles();
-map.drawCells();
-map.drawPoints();
+map.render();
 
 
 ssm.loadAllCharacterClasses(AnimationProfiles);
-//const char_select = new CharSelectGui(win, charSelected);
-//char_select.start();
+const char_select = new CharSelectGui(win, charSelected);
+char_select.start();
 
 
 function charSelected(){
