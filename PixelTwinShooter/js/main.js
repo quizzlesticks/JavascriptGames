@@ -9,7 +9,6 @@ const map = new MapManager(win);
 
 win.clearWindow("white");
 
-win.clearWindow("white");
 map.drawTriangles();
 map.drawCells();
 map.drawPoints();

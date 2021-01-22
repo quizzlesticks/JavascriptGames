@@ -5,11 +5,15 @@ class MapManager {
 	#_path = {deli: undefined, voronoi: undefined};
 	#_voronoi;
 	#_margin_bleed = -15;
+	#_regions;
+	#_region_descriptors = {ocean: 0, beach: 1};
 
 	constructor(win, radius=50) {
 		this.#_win = win;
 		this.randomize(radius);
 		this.relaxe(6);
+		this.#_regions = new Array(this.number_of_cells);
+		this.assignRegions();
 	}
 
 	get points() {
@@ -26,6 +30,28 @@ class MapManager {
 
 	get number_of_cells() {
 		return this.#_deli.points.length/2;
+	}
+
+	assignRegions() {
+		//Assign ocean regions
+		//Start at the last cell and move back
+		//Assigning ocean to all cells that have a point on the wall.
+		var cur_cell = this.number_of_cells - 1;
+		const width = this.#_win.width;
+		const height = this.#_win.height;
+		while(cur_cell >= 0) {
+			const cell_vertices = this.#_voronoi.cellPolygon(cur_cell);
+			for (var i = 0; i < cell_vertices.length; i++) {
+				if(cell_vertices[i][0] == width || cell_vertices[i][0] == 0 || cell_vertices[i][1] == height || cell_vertices[i][1] == 0) {
+					this.#_regions[cur_cell = this.#_region_descriptors.ocean];
+					break;
+				}
+			}
+			if(this.#_regions[cur_cell] == undefined) {
+				break;
+			}
+			cur_cell--;
+		}
 	}
 
 	relaxe(times_to_relax=1) {
