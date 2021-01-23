@@ -43,9 +43,7 @@ function animate() {
         window.requestAnimationFrame(animate);
         return;
     }
-    var p = cm.player.pos;
-    var cp = cm.player.camerapos;
-    var np = {x: cp.x - p.x, y: cp.y - p.y};
+    var np = cm.relativePlayerPosition;
     win.context.drawImage(map_image, 0,0, win.width, win.height, np.x*128,np.y*128, win.width*128, win.height*128);
     cm.drawAllCharacters(sock.id);
     gui.draw();

@@ -123,7 +123,7 @@ class WindowManager {
     }
 
     relativeToCamera(pos) {
-        return {x: this.#camera_pos.x - pos.x, y: this.#_camera_pos.y - pos.y};
+        return {x: this.#camera_pos.x - pos.x, y: this.#camera_pos.y - pos.y};
     }
 
     positionToMapPosition(pos) {
