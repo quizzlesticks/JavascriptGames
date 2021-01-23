@@ -8,7 +8,10 @@ class MapManager {
 	#_regions;
 	#_region_descriptors = {ocean: 0, beach: 1, forest: 2, grasslands: 3,
 		                    highlands: 4, lowmountains: 5, mountain_top: 6};
+	#_region_filenames = [];
 	#_region_colors = [];
+	#_tile_size = 128;
+	#_last_guess;
 
 	constructor(win, radius=30) {
 		this.#_win = win;
@@ -16,6 +19,12 @@ class MapManager {
 		this.relaxe(6);
 		this.#_regions = new Array(this.number_of_cells);
 		this.assignRegions();
+		this.setDefaultRegionColors();
+		this.setDefaultRegionFiles();
+		this.loadRegionTiles();
+	}
+
+	setDefaultRegionColors() {
 		this.#_region_colors[this.#_region_descriptors.ocean] = "#33ccffaa";
 		this.#_region_colors[this.#_region_descriptors.beach] = "#ffff66aa";
 		this.#_region_colors[this.#_region_descriptors.forest] = "#007027aa";
@@ -23,6 +32,51 @@ class MapManager {
 		this.#_region_colors[this.#_region_descriptors.highlands] = "#cfcf1baa";
 		this.#_region_colors[this.#_region_descriptors.lowmountains] = "#808080aa";
 		this.#_region_colors[this.#_region_descriptors.mountain_top] = "#281440aa";
+	}
+
+	setDefaultRegionFiles() {
+		this.#_region_filenames[this.#_region_descriptors.ocean] = undefined;
+		this.#_region_filenames[this.#_region_descriptors.beach] = "/Spritesheets/BeachSand.png";
+		this.#_region_filenames[this.#_region_descriptors.forest] = undefined;
+		this.#_region_filenames[this.#_region_descriptors.grasslands] = undefined;
+		this.#_region_filenames[this.#_region_descriptors.highlands] = undefined;
+		this.#_region_filenames[this.#_region_descriptors.lowmountains] = undefined;
+		this.#_region_filenames[this.#_region_descriptors.mountain_top] = undefined;
+	}
+
+	loadRegionTiles(p) {
+		const ssm = this.#_win.ssm;
+		for(var i = 0; i < this.#_region_filenames.length; i++) {
+			if(this.#_region_filenames[i] != undefined) {
+				ssm.load(this.#_region_filenames[i], "Tile" + i, this.#_win.tile_size, this.#_win.tile_size, 1, 1);
+			}
+		}
+	}
+
+	draw(player_pos) {
+		//Since we draw one this.#_win.tile_size size tile for every pixel
+		//of the map we need to convert the players position to the map
+		//position
+		const map_pos = this.#_win.positionToMapPosition(player_pos);
+
+	}
+
+	regionAtPointWithMemory(x,y) {
+		if(this.#_last_guess == undefined) {
+			this.#_last_guess = this.#_deli.find(x,y);
+			return this.#_regions[this.#_last_guess];
+		} else {
+			this.#_last_guess = this.#_deli.find(x,y,this.#_last_guess);
+			return this.#_regions[this.#_last_guess];
+		}
+	}
+
+	regionAtPointWithGuess(x,y,g) {
+		return this.#_regions[this.#_deli.find(x,y,g)];
+	}
+
+	regionAtPoint(x,y) {
+		return this.#_regions[this.#_deli.find(x,y)];
 	}
 
 	get points() {
