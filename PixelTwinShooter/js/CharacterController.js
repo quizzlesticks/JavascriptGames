@@ -72,7 +72,7 @@ class CharacterController{
 
     //returns the position that the player will have after
     //updating, used for things that draw under the player
-    get postUpdatePosition() {
+    get post_update_position() {
         const p = {x: this.x, y: this.y};
         if(this.#_key_states["KeyA"]) {
             p.x -= this.#_speed;

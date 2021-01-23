@@ -1,5 +1,5 @@
 const win = new WindowManager();
-win.debug = true;
+//win.debug = true;
 Math.seedrandom("troy");
 const sock = io();
 const gui = new ItemGui(win);
@@ -43,8 +43,9 @@ function animate() {
         window.requestAnimationFrame(animate);
         return;
     }
-    var np = cm.relativePlayerPosition;
+    const np = cm.relativePostPlayerPosition;
     win.context.drawImage(map_image, 0,0, win.width, win.height, np.x*128,np.y*128, win.width*128, win.height*128);
+    map.draw(cm.player.post_update_position);
     cm.drawAllCharacters(sock.id);
     gui.draw();
     ssm.drawSprite("bow",0,win.player_space_width+25,600);

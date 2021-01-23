@@ -54,11 +54,21 @@ class MapManager {
 	}
 
 	draw(player_pos) {
+		const rp = this.#_win.relativeToCamera(player_pos);
 		//Since we draw one this.#_win.tile_size size tile for every pixel
 		//of the map we need to convert the players position to the map
 		//position
 		const map_pos = this.#_win.positionToMapPosition(player_pos);
-
+		const gridded_map_pos = {x: Math.floor(map_pos.x), y: Math.floor(map_pos.y)};
+		const start_pos = {x: gridded_map_pos.x - Math.floor(this.#_win.num_tiles_horizontal/2), y: gridded_map_pos.y - Math.floor(this.#_win.num_tiles_vertical/2)};
+		for (var j = 0; j < this.#_win.num_tiles_vertical; j++) {
+			for (var i = 0; i < this.#_win.num_tiles_horizontal; i++) {
+				const cur_region = this.regionAtPointWithMemory(start_pos.x + i, start_pos.y + j);
+				if(this.#_region_filenames[cur_region] != undefined) {
+					this.#_win.ssm.drawSprite("Tile" + cur_region, 0, (start_pos.x + i)*this.#_win.tile_size + rp.x, (start_pos.y + i)*this.#_win.tile_size + rp.y);
+				}
+			}
+		}
 	}
 
 	regionAtPointWithMemory(x,y) {

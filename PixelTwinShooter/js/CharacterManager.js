@@ -37,6 +37,13 @@ class CharacterManager {
         delete this.#_char_list[id];
     }
 
+    //This is the relative player position "after" the next animation
+    //used for drawing things that are relative but done before
+    //drawAllCharacters is called
+    get relativePostPlayerPosition() {
+        return this.#_win.relativeToCamera(this.#player.post_update_position);
+    }
+
     get relativePlayerPosition() {
         return this.#_win.relativeToCamera(this.#player.pos);
     }
