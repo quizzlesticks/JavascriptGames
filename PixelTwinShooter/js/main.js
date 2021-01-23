@@ -1,5 +1,5 @@
 const win = new WindowManager();
-win.debug = true;
+//win.debug = true;
 Math.seedrandom("troy");
 const sock = io();
 const gui = new ItemGui(win);
