@@ -42,6 +42,7 @@ async def disconnect(sid):
         await sio.emit('player_left', sid, room='main_lobby')
 
 app.router.add_get('/', index)
+app.router.add_static('/fav/', path='../../favicon/')
 app.router.add_static('/css/', path='../../css')
 app.router.add_static('/js/', path='../../js')
 app.router.add_static('/Spritesheets', path='../../Spritesheets')

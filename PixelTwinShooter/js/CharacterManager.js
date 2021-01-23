@@ -37,10 +37,12 @@ class CharacterManager {
         delete this.#_char_list[id];
     }
 
+    get relativePlayerPosition() {
+        return this.#_win.relativeToCamera(this.#player.pos);
+    }
+
     drawAllCharacters(id) {
-        var p = this.#player.pos;
-        var cp = this.#player.camerapos;
-        var np = {x: cp.x - p.x, y: cp.y - p.y};
+        const np = this.relativePlayerPosition;
         var keys = Object.keys(this.#_char_list);
         for(var i = 0; i < keys.length; i++) {
             if(keys[i] != id){

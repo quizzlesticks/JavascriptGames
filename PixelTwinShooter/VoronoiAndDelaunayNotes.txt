@@ -1,0 +1,10 @@
+Their are only as many Voronoi cells as there are points. So the last Voronoi cell
+is at delaunay.points.length-1.
+
+To keep the property that the cell contained by the position (x,y) is the point
+of the nearest delaunay triangle we have to use the circumcenter.
+This requires us to use Lloyd's Relaxation a few times to get a more bubble foam
+look to the map. For each seed the amount of times we have to relax is unknown.
+We will come up with a good number eventually.
+
+In general the cell vertices will not be whole numbers.

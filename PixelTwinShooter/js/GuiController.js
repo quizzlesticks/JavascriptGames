@@ -45,18 +45,18 @@ class CharSelectGui {
         this.#top_edge_second_box = this.#_win.height/2-this.#square_width/2;
         this.#bottom_edge_second_box = this.#top_edge_second_box + this.#square_width;
 
-        this.#_win.clearWindow("#2c0c27");
-        var ctx = this.#_win.context;
-        ctx.save();
-        ctx.strokeStyle = "#bbb7b7";
-        ctx.strokeRect(this.#left_edge_first_box, this.#top_edge_first_box, this.#square_width, this.#square_width);
-        ctx.strokeRect(this.#left_edge_second_box,this.#top_edge_second_box, this.#square_width, this.#square_width);
-        ctx.font = "30px Helvetica";
-    	ctx.textAlign = "center";
-    	ctx.fillStyle = "#bbb7b7";
-    	ctx.fillText("RRH",this.#_win.width/2-this.#square_width/2-this.#gap/2, this.#_win.height/2);
-        ctx.fillText("SG",this.#_win.width/2+this.#square_width/2+this.#gap/2, this.#_win.height/2);
-        ctx.restore();
+        // this.#_win.clearWindow("#2c0c27");
+        // var ctx = this.#_win.context;
+        // ctx.save();
+        // ctx.strokeStyle = "#bbb7b7";
+        // ctx.strokeRect(this.#left_edge_first_box, this.#top_edge_first_box, this.#square_width, this.#square_width);
+        // ctx.strokeRect(this.#left_edge_second_box,this.#top_edge_second_box, this.#square_width, this.#square_width);
+        // ctx.font = "30px Helvetica";
+    	// ctx.textAlign = "center";
+    	// ctx.fillStyle = "#bbb7b7";
+    	// ctx.fillText("RRH",this.#_win.width/2-this.#square_width/2-this.#gap/2, this.#_win.height/2);
+        // ctx.fillText("SG",this.#_win.width/2+this.#square_width/2+this.#gap/2, this.#_win.height/2);
+        // ctx.restore();
     }
 
     get selected_char() {
@@ -101,6 +101,7 @@ class CharSelectGui {
     	ctx.fillStyle = "#bbb7b7";
     	ctx.fillText("RRH",this.#_win.width/2-this.#square_width/2-this.#gap/2, this.#_win.height/2);
         ctx.fillText("SG",this.#_win.width/2+this.#square_width/2+this.#gap/2, this.#_win.height/2);
+        ctx.fillText("Wizards keep that thang on them.",this.#_win.width/2, 200);
         ctx.restore();
 
     }

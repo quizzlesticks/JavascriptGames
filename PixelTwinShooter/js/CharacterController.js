@@ -5,7 +5,6 @@ class CharacterController{
                "KeyW": false};
 
     #_mousedown = false;
-    #_camerapos = {x: undefined, y: undefined};
     #pos = {x: undefined, y: undefined};
 
     #_mouse_zoning = {slope: undefined, top_b: undefined, bottom_b: undefined};
@@ -18,7 +17,7 @@ class CharacterController{
 
     #_socket;
 
-    #_speed = 20; //4
+    #_speed = 0.1; //4
 
     constructor(window_manager, socket, player_class, id, x=0, y=0, scale=0) {
         this.#_win = window_manager;
@@ -29,8 +28,7 @@ class CharacterController{
             y = this.#_win.player_space_height/2;
         }
         this.#_animator = new CharacterAnimatable(window_manager, player_class, x, y);
-        this.#_camerapos.x = x;
-        this.#_camerapos.y = y;
+        this.#_win.camerapos = {x: x, y: y};
         this.x = x;
         this.y = y;
         this.#_mouse_zoning.slope = this.#_win.player_space_height/this.#_win.player_space_width;
@@ -53,10 +51,6 @@ class CharacterController{
         return this.#pos.y;
     }
 
-    get camerapos() {
-        return this.#_camerapos;
-    }
-
     get pos() {
         return this.#pos;
     }
@@ -74,6 +68,25 @@ class CharacterController{
     set pos(p) {
         this.#pos = p;
         //this.#_animator.pos = p;
+    }
+
+    //returns the position that the player will have after
+    //updating, used for things that draw under the player
+    get postUpdatePosition() {
+        const p = {x: this.x, y: this.y};
+        if(this.#_key_states["KeyA"]) {
+            p.x -= this.#_speed;
+        }
+        if(this.#_key_states["KeyD"]) {
+            p.x += this.#_speed;
+        }
+        if(this.#_key_states["KeyS"]) {
+            p.y += this.#_speed;
+        }
+        if(this.#_key_states["KeyW"]) {
+            p.y -= this.#_speed;
+        }
+        return p;
     }
 
     #_last_x_sent = undefined;
@@ -113,13 +126,13 @@ class CharacterController{
             ctx.lineTo(this.#_win.player_space_width, this.#topZoningLine(this.#_win.player_space_width));
             ctx.stroke();
             ctx.beginPath();
-            ctx.strokeStyle = "#ffffff";
+            ctx.strokeStyle = "#0000ff";
             ctx.moveTo(0,this.#bottomZoningLine(0));
             ctx.lineTo(this.#_win.player_space_width, this.#bottomZoningLine(this.#_win.player_space_width));
             ctx.stroke();
             //shows keys
             ctx.beginPath();
-            ctx.strokeStyle = "white";
+            ctx.strokeStyle = "black";
             ctx.fillStyle = "black";
             ctx.strokeRect(70, 10, 50, 50);
             if(this.#_key_states["KeyW"])
