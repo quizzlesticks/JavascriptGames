@@ -22,6 +22,7 @@ class MapManager {
 		this.setDefaultRegionColors();
 		this.setDefaultRegionFiles();
 		this.loadRegionTiles();
+		this.animateDrawUnderCell = this.animateDrawUnderCell.bind(this);
 	}
 
 	setDefaultRegionColors() {
@@ -54,18 +55,19 @@ class MapManager {
 	}
 
 	draw(player_pos) {
+		//console.log(player_pos);
 		const rp = this.#_win.relativeToCamera(player_pos);
 		//Since we draw one this.#_win.tile_size size tile for every pixel
 		//of the map we need to convert the players position to the map
 		//position
 		const map_pos = this.#_win.positionToMapPosition(player_pos);
 		const gridded_map_pos = {x: Math.floor(map_pos.x), y: Math.floor(map_pos.y)};
-		const start_pos = {x: gridded_map_pos.x - Math.floor(this.#_win.num_tiles_horizontal/2), y: gridded_map_pos.y - Math.floor(this.#_win.num_tiles_vertical/2)};
+		const start_map_pos = {x: gridded_map_pos.x - Math.floor(this.#_win.num_tiles_horizontal/2), y: gridded_map_pos.y - Math.floor(this.#_win.num_tiles_vertical/2)};
 		for (var j = 0; j < this.#_win.num_tiles_vertical; j++) {
 			for (var i = 0; i < this.#_win.num_tiles_horizontal; i++) {
-				const cur_region = this.regionAtPointWithMemory(start_pos.x + i, start_pos.y + j);
+				const cur_region = this.regionAtPointWithMemory(start_map_pos.x + i, start_map_pos.y + j);
 				if(this.#_region_filenames[cur_region] != undefined) {
-					this.#_win.ssm.drawSprite("Tile" + cur_region, 0, (start_pos.x + i)*this.#_win.tile_size + rp.x, (start_pos.y + i)*this.#_win.tile_size + rp.y);
+					this.#_win.ssm.drawSprite("Tile" + cur_region, 0, (start_map_pos.x+i)*this.#_win.tile_size+rp.x, (start_map_pos.y+j)*this.#_win.tile_size+rp.y);
 				}
 			}
 		}
@@ -202,6 +204,13 @@ class MapManager {
 		}
 	}
 
+	animateDrawUnderCell(event) {
+	     const pos = this.#_win.mouseToCanvas({x: event.clientX, y: event.clientY});
+	     console.log(pos);
+	     this.drawRegions();
+	     this.drawUnderCell(pos.x, pos.y);
+	}
+
 	drawUnderCell(x, y) {
 		if(x > this.#_win.width || x < 0 || y > this.#_win.height || y < 0) {
 			this.#_win.clearWindow("white");
@@ -210,7 +219,7 @@ class MapManager {
 			this.drawPoints();
 			return;
 		}
-		this.#_win.clearWindow("white");
+		//this.#_win.clearWindow("white");
 		var point = this.#_deli.find(x, y);
 		var ctx = this.#_win.context;
 		ctx.save();

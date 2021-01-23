@@ -21,8 +21,12 @@ class WindowManager {
         this.#_gui_width = gui_width;
         this.#_ssm = new SpriteSheetManager(this.#_context);
         this.smoothing = smoothing;
+        this.#camera_pos.x = this.player_space_width/2;
+        this.#camera_pos.y = this.player_space_height/2;
         this.#num_tiles_horizontal = Math.ceil(this.#_width/this.#tile_size)+2;
+        if(this.#num_tiles_horizontal%2==0) {this.#num_tiles_horizontal += 1;}
         this.#num_tiles_vertical = Math.ceil(this.#_height/this.#tile_size)+2;
+        if(this.#num_tiles_vertical%2==0) {this.#num_tiles_vertical += 1;}
     }
 
     resizeWindow(width,height){
@@ -39,7 +43,11 @@ class WindowManager {
         this.#_context.restore();
     }
 
-    set camerapos(p) {
+    get camera_pos() {
+        return this.#camera_pos;
+    }
+
+    set camera_pos(p) {
         this.#camera_pos.x = p.x;
         this.#camera_pos.y = p.y;
     }

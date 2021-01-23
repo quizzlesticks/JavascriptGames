@@ -17,23 +17,18 @@ class CharacterController{
 
     #_socket;
 
-    #_speed = 0.1; //4
+    #_speed = 12; //4
 
-    constructor(window_manager, socket, player_class, id, x=0, y=0, scale=0) {
+    constructor(window_manager, socket, player_class, id, x=11079, y=12100, scale=0) {
         this.#_win = window_manager;
         this.#_socket = socket;
         this.#_id = id;
-        if(!x && !y) {
-            x = this.#_win.player_space_width/2;
-            y = this.#_win.player_space_height/2;
-        }
-        this.#_animator = new CharacterAnimatable(window_manager, player_class, x, y);
-        this.#_win.camerapos = {x: x, y: y};
         this.x = x;
         this.y = y;
+        this.#_animator = new CharacterAnimatable(window_manager, player_class, this.#_win.camera_pos.x, this.#_win.camera_pos.y);
         this.#_mouse_zoning.slope = this.#_win.player_space_height/this.#_win.player_space_width;
-        this.#_mouse_zoning.top_b = this.#pos.y - this.#_mouse_zoning.slope * this.#pos.x;
-        this.#_mouse_zoning.bottom_b = this.#pos.y + this.#_mouse_zoning.slope * this.#pos.x - this.#_win.player_space_height;
+        this.#_mouse_zoning.top_b = this.#_win.camera_pos.y - this.#_mouse_zoning.slope * this.#_win.camera_pos.x;
+        this.#_mouse_zoning.bottom_b = this.#_win.camera_pos.y + this.#_mouse_zoning.slope * this.#_win.camera_pos.x - this.#_win.player_space_height;
         this.updateAnimation = this.updateAnimation.bind(this);
         this.draw = this.draw.bind(this);
         window.addEventListener("keydown", this.updateAnimation);

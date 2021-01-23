@@ -16,12 +16,12 @@ class CharacterManager {
         return this.#_char_list[id];
     }
 
-    addPlayerCharacter(socket, player_class, id, x=0, y=0, scale=0) {
+    addPlayerCharacter(socket, player_class, id, x, y, scale) {
         this.#_char_list[id] = new CharacterController(this.#_win, socket, player_class, id, x, y, scale);
         this.#player = this.#_char_list[id];
     }
 
-    addNetworkCharacter(player_class, id, x=0, y=0, scale=0) {
+    addNetworkCharacter(player_class, id, x, y, scale) {
         if(Object.keys(this.#_char_list).includes(id)){
             return;
         }
@@ -37,15 +37,12 @@ class CharacterManager {
         delete this.#_char_list[id];
     }
 
-    //This is the relative player position "after" the next animation
-    //used for drawing things that are relative but done before
-    //drawAllCharacters is called
-    get relativePostPlayerPosition() {
-        return this.#_win.relativeToCamera(this.#player.post_update_position);
+    get player_position() {
+        return this.#player.pos;
     }
 
-    get relativePlayerPosition() {
-        return this.#_win.relativeToCamera(this.#player.pos);
+    get post_update_player_position() {
+        return this.#player.post_update_position;
     }
 
     drawAllCharacters(id) {

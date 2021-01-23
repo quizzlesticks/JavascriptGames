@@ -1,5 +1,5 @@
 const win = new WindowManager();
-//win.debug = true;
+win.debug = true;
 Math.seedrandom("troy");
 const sock = io();
 const gui = new ItemGui(win);
@@ -7,16 +7,17 @@ const cm = new CharacterManager(win);
 const ssm = win.ssm;
 const map = new MapManager(win);
 
-
 map.render();
 var map_image;
 createImageBitmap(win.canvas).then(assignMapImage);
+
+//window.addEventListener("mousemove",map.animateDrawUnderCell);
 
 function assignMapImage(img) {
     map_image = img;
     game_initialized += 1
 }
-
+//
 ssm.loadAllCharacterClasses(AnimationProfiles);
 const char_select = new CharSelectGui(win, charSelected);
 char_select.start();
@@ -33,9 +34,10 @@ var game_initialized = 0;
 
 function initGame() {
     game_initialized += 1;
+    if(game_initialized == game_start) {
+        window.requestAnimationFrame(animate);
+    }
 }
-
-window.requestAnimationFrame(animate);
 
 function animate() {
     //just to see where the map tiling fails
@@ -43,9 +45,12 @@ function animate() {
         window.requestAnimationFrame(animate);
         return;
     }
-    const np = cm.relativePostPlayerPosition;
-    win.context.drawImage(map_image, 0,0, win.width, win.height, np.x*128,np.y*128, win.width*128, win.height*128);
-    map.draw(cm.player.post_update_position);
+    win.clearWindow("red");
+    const up = cm.post_update_player_position;
+    const rp = win.relativeToCamera(up);
+    const mp = win.positionToMapPosition({x: -rp.x, y: -rp.y});
+    win.context.drawImage(map_image, mp.x, mp.y, win.num_tiles_horizontal, win.num_tiles_vertical, 0, 0, win.num_tiles_horizontal*win.tile_size, win.num_tiles_vertical*win.tile_size);
+    map.draw(up);
     cm.drawAllCharacters(sock.id);
     gui.draw();
     ssm.drawSprite("bow",0,win.player_space_width+25,600);
