@@ -6,8 +6,8 @@ class MapManager {
 	#_voronoi;
 	#_margin_bleed = -15;
 	#_regions;
-	#_region_descriptors = {ocean: 0, beach: 1, forest: 2, grasslands: 3,
-		                    highlands: 4, lowmountains: 5, mountain_top: 6};
+	#_region_descriptors = {deepocean: 0, ocean: 1, beach: 2, forest: 3, grasslands: 4,
+		                    highlands: 5, lowmountains: 6, mountain_top: 7};
 	#_region_filenames = [];
 	#_region_colors = [];
 	#_tile_size = 128;
@@ -26,6 +26,7 @@ class MapManager {
 	}
 
 	setDefaultRegionColors() {
+		this.#_region_colors[this.#_region_descriptors.deepocean] = "#6134eb";
 		this.#_region_colors[this.#_region_descriptors.ocean] = "#33ccffaa";
 		this.#_region_colors[this.#_region_descriptors.beach] = "#ffff66aa";
 		this.#_region_colors[this.#_region_descriptors.forest] = "#007027aa";
@@ -36,7 +37,8 @@ class MapManager {
 	}
 
 	setDefaultRegionFiles() {
-		this.#_region_filenames[this.#_region_descriptors.ocean] = undefined;
+		this.#_region_filenames[this.#_region_descriptors.deepocean] = "/Spritesheets/DeepOceanWater.png";
+		this.#_region_filenames[this.#_region_descriptors.ocean] = "/Spritesheets/OceanWater.png";
 		this.#_region_filenames[this.#_region_descriptors.beach] = "/Spritesheets/BeachSand.png";
 		this.#_region_filenames[this.#_region_descriptors.forest] = undefined;
 		this.#_region_filenames[this.#_region_descriptors.grasslands] = undefined;
@@ -118,15 +120,14 @@ class MapManager {
 	}
 
 	assignRegions() {
-		//Assign ocean regions
-		//Assigning ocean to all cells that have a point on the wall.
+		//Assigning deep ocean to all cells that have a point on the wall.
 		const width = this.#_win.width;
 		const height = this.#_win.height;
 		for(let cur_cell = 0; cur_cell < this.number_of_cells; cur_cell++) {
 			const cell_vertices = this.#_voronoi.cellPolygon(cur_cell);
 			for (var i = 0; i < cell_vertices.length; i++) {
 				if(cell_vertices[i][0] == width || cell_vertices[i][0] == 0 || cell_vertices[i][1] == height || cell_vertices[i][1] == 0) {
-					this.#_regions[cur_cell] = this.#_region_descriptors.ocean;
+					this.#_regions[cur_cell] = this.#_region_descriptors.deepocean;
 					break;
 				}
 			}
@@ -134,7 +135,7 @@ class MapManager {
 		//The most middle zone should always be the mountain_top
 		this.#_regions[this.#_deli.find(width/2, height/2)] = this.#_region_descriptors.mountain_top;
 		//Ensure that the beach isn't going out of the map
-		this.assignBasedOnNeighbors(this.#_region_descriptors.ocean, this.#_region_descriptors.ocean);
+		this.assignBasedOnNeighbors(this.#_region_descriptors.deepocean, this.#_region_descriptors.ocean);
 		//Everybody touching the ocean now gets to be a beach
 		this.assignBasedOnNeighbors(this.#_region_descriptors.ocean, this.#_region_descriptors.beach);
 		//everbody touching the beach gets to be forest

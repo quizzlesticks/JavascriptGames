@@ -17,7 +17,7 @@ class CharacterController{
 
     #_socket;
 
-    #_speed = 12; //4
+    #_speed = 6; //4
 
     constructor(window_manager, socket, player_class, id, x=11079, y=12100, scale=0) {
         this.#_win = window_manager;
