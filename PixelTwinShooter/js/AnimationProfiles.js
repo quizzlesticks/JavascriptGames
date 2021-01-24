@@ -1,3 +1,4 @@
+export default AnimationProfiles; // variable gets hoisted lol
 const AnimationProfiles = {
     CharacterClasses: {
         RedRidingHood: {
@@ -94,4 +95,4 @@ const AnimationProfiles = {
             }
         }
     }
-}
+};

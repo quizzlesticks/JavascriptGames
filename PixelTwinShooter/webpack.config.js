@@ -1,26 +1,30 @@
 module.exports = {
-  entry: './js/main.js',
+  entry: "./js/main.js",
   output: {
-    path: __dirname + '/dist',
-    filename: 'bundle.js'
+    path: __dirname + "/dist",
+    filename: "bundle.js"
   },
   module: {
     rules: [
       {
-        enforce: 'pre',
+        enforce: "pre",
         test: /.js$/,
         exclude: /node_modules/,
-        loader: 'eslint-loader'
+        loader: "eslint-loader"
       },
       {
         test: /\.m?js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: ['@babel/preset-env']
+            presets: ["@babel/preset-env"]
           }
         }
-      }]
-  }
+      }
+    ]
+  },
+  optimization: {
+    minimize: false
+  },
 };

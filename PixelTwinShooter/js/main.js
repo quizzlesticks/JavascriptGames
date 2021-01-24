@@ -1,10 +1,16 @@
+import "regenerator-runtime/runtime.js"; // REQUIRED for webpack!
+
 import WindowManager from "./WindowManager";
-import { ItemGui } from "./GuiController.js";
+import CharacterManager from "./CharacterManager";
+import MapManager from "./MapManager";
+import AnimationProfiles from "./AnimationProfiles";
+import { ItemGui, CharSelectGui } from "./Guis";
 import socketIOClient from "socket.io-client";
+import seedrandom from "seed-random";
 
 const win = new WindowManager();
 win.debug = true;
-Math.seedrandom("troy");
+seedrandom("troy");
 const sock = socketIOClient();
 const gui = new ItemGui(win);
 const cm = new CharacterManager(win);
