@@ -18,7 +18,7 @@ export class CharacterController{
 
     #_socket;
 
-    #_speed = 12; //4
+    #_speed = 6; //4
 
     constructor(window_manager, socket, player_class, id, x=11079, y=12100) { // removed scale=0 because it was never used
         this.#_win = window_manager;

@@ -11,7 +11,7 @@ export default class WindowManager {
     #_debug = false;
     #_spritefolder = "/Spritesheets";
     #camera_pos = {x: undefined, y: undefined};
-    #tile_size = 128;
+    #tile_size = 64;
     #num_tiles_horizontal;
     #num_tiles_vertical;
 
@@ -24,7 +24,7 @@ export default class WindowManager {
         this.smoothing = smoothing;
         this.#camera_pos.x = this.player_space_width/2;
         this.#camera_pos.y = this.player_space_height/2;
-        this.#num_tiles_horizontal = Math.ceil(this.#_width/this.#tile_size)+2;
+        this.#num_tiles_horizontal = Math.ceil(this.#_width/this.#tile_size)+4;
         if(this.#num_tiles_horizontal%2==0) {this.#num_tiles_horizontal += 1;}
         this.#num_tiles_vertical = Math.ceil(this.#_height/this.#tile_size)+2;
         if(this.#num_tiles_vertical%2==0) {this.#num_tiles_vertical += 1;}
