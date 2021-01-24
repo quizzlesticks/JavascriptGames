@@ -1,0 +1,7 @@
+{
+  "input": "*.html",
+  "output": "dist",
+  "plugins": {
+    "htmlnano": {}
+  }
+}
