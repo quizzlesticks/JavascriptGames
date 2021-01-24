@@ -1,4 +1,5 @@
-class CharacterController{
+import { CharacterAnimatable } from "./AnimatableClasses";
+export class CharacterController{
     #_key_states = {"KeyS": false,
                "KeyD": false,
                "KeyA": false,
@@ -19,7 +20,7 @@ class CharacterController{
 
     #_speed = 6; //4
 
-    constructor(window_manager, socket, player_class, id, x=11079, y=12100, scale=0) {
+    constructor(window_manager, socket, player_class, id, x=11079, y=12100) { // removed scale=0 because it was never used
         this.#_win = window_manager;
         this.#_socket = socket;
         this.#_id = id;
@@ -198,7 +199,7 @@ class CharacterController{
         }
     }
 
-    #findMouseZone(mp) {
+    #findMouseZone = function (mp) {
         //If we are exactly on the player return zone 0 (right)
         if(mp.x == this.x && mp.y == this.y){
             return "KeyD";
@@ -227,16 +228,16 @@ class CharacterController{
         }
     }
 
-    #topZoningLine(x) {
+    #topZoningLine = function(x) {
         return this.#_mouse_zoning.slope*x + this.#_mouse_zoning.top_b;
     }
 
-    #bottomZoningLine(x) {
+    #bottomZoningLine = function(x) {
         return this.#_win.player_space_height - this.#_mouse_zoning.slope*x + this.#_mouse_zoning.bottom_b;
     }
 }
 
-class NetworkCharacterController{
+export class NetworkCharacterController{
     #_mousedown = false;
     #pos = {x: undefined, y: undefined};
 
@@ -244,7 +245,7 @@ class NetworkCharacterController{
 
     #_animator;
 
-    constructor(window_manager, player_class, id, x=0, y=0, scale=0) {
+    constructor(window_manager, player_class, id, x=0, y=0) { // removed scale=0 because it was never used
         this.#_win = window_manager;
         if(!x && !y) {
             x = this.#_win.player_space_width/2;

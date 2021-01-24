@@ -1,4 +1,6 @@
-class AnimatableClass {
+import AnimationProfiles from "./AnimationProfiles";
+
+export class AnimatableClass {
     //The _ leading char means it should be accessible in someway from outside
     //Everything else is explicitly private
     #_ssm;
@@ -123,7 +125,7 @@ class AnimatableClass {
     }
 }
 
-class CharacterAnimatable {
+export class CharacterAnimatable {
     #_idle;
     #_move;
     #_attack;
@@ -136,7 +138,7 @@ class CharacterAnimatable {
         var animation_super_profile;
         if(!(animation_super_profile = AnimationProfiles.CharacterClasses[player_class])) {
             throw new Error("Trying to load unloadable class.");
-            return undefined;
+            // return undefined; unreachable due to thrown error
         }
         this.#_idle = new AnimatableClass(this.#_win.ssm, animation_super_profile.Idle, px, py, scale);
         this.#_move = new AnimatableClass(this.#_win.ssm, animation_super_profile.Move, px, py, scale);

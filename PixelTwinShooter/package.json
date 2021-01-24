@@ -1,0 +1,51 @@
+{
+  "name": "PixelTwinShooter",
+  "version": "0.0.1",
+  "description": "a basic RotMG game written in JS",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint --fix --ext .js,.jsx ./js",
+    "serve": "browser-sync start --server \"dist\" --files \"dist\"",
+    "watch": "run-p serve watch:*",
+    "build": "run-p build:*",
+    "build:js": "webpack --mode=production",
+    "watch:js": "onchange \"js\" -- webpack --mode=development",
+    "build:html": "posthtml -c posthtml.json",
+    "watch:html": "onchange \"./*.html\" -- npm run build:html",
+    "build:css": "copyfiles css/* dist",
+    "watch:css": "onchange \"css\" -- copyfiles css/* dist",
+    "build:sprites": "run-p images:*",
+    "images:sprites": "copyfiles Spritesheets/* dist",
+    "watch:images": "onchange \"Spritesheets\" -- copyfiles Spritesheets/* dist/Spritesheets"
+  },
+  "author": "Matt et al.",
+  "license": "none",
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/eslint-parser": "^7.12.1",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-private-methods": "^7.12.1",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/runtime": "^7.12.5",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.2.2",
+    "browser-sync": "^2.26.13",
+    "copyfiles": "^2.4.1",
+    "eslint": "^7.18.0",
+    "eslint-loader": "^4.0.2",
+    "htmlnano": "^0.2.8",
+    "npm-run-all": "^4.1.5",
+    "onchange": "^7.1.0",
+    "posthtml": "^0.15.1",
+    "posthtml-cli": "^0.9.1",
+    "webpack": "^5.17.0",
+    "webpack-cli": "^4.4.0"
+  },
+  "dependencies": {
+    "core-js": "^3.8.3",
+    "d3-delaunay": "^5.3.0",
+    "regenerator-runtime": "^0.13.7",
+    "seed-random": "^2.2.0",
+    "socket.io-client": "^3.1.0"
+  }
+}

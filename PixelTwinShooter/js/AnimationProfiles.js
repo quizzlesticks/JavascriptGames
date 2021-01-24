@@ -94,4 +94,6 @@ const AnimationProfiles = {
             }
         }
     }
-}
+};
+
+export default AnimationProfiles;

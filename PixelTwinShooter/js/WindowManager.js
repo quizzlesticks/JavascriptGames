@@ -1,4 +1,5 @@
-class WindowManager {
+import { SpriteSheetManager } from "./SpriteSheetManager.js";
+export default class WindowManager {
     #_canvas;
     #_context;
     #_height;
@@ -15,7 +16,7 @@ class WindowManager {
     #num_tiles_vertical;
 
     constructor(width=1000, height=800, gui_width=250, smoothing=false) {
-        this.#_canvas = document.getElementById('canvas');
+        this.#_canvas = document.getElementById("canvas");
         this.#_context = this.#_canvas.getContext("2d");
         this.resizeWindow(width, height);
         this.#_gui_width = gui_width;
@@ -39,7 +40,7 @@ class WindowManager {
     clearWindow(color="black"){
         this.#_context.save();
         this.#_context.fillStyle = color;
-        this.#_context.fillRect(0,0,canvas.width,canvas.height);
+        this.#_context.fillRect(0,0,this.#_canvas.width,this.#_canvas.height);
         this.#_context.restore();
     }
 

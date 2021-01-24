@@ -1,4 +1,5 @@
-class CharacterManager {
+import { CharacterController, NetworkCharacterController } from "./CharacterControllers";
+export default class CharacterManager {
     #_char_list;
     #_id_list;
     #_win;

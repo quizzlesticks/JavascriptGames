@@ -11,8 +11,13 @@ connected_users = {}
 
 async def index(request):
     print(request)
-    with open('../../pixelshooter.html') as f:
+    with open('../../dist/index.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
+
+async def bundle(request):
+    print(request)
+    with open('../../dist/bundle.js') as f:
+        return web.Response(text=f.read(), content_type='text/javascript')
 
 @sio.on('player_selected')
 async def player_selected(sid, data):
@@ -42,11 +47,11 @@ async def disconnect(sid):
         await sio.emit('player_left', sid, room='main_lobby')
 
 app.router.add_get('/', index)
+app.router.add_get('/bundle.js', bundle)
 app.router.add_static('/fav/', path='../../favicon/')
-app.router.add_static('/css/', path='../../css')
-app.router.add_static('/js/', path='../../js')
-app.router.add_static('/Spritesheets', path='../../Spritesheets')
-app.router.add_static('/Map', path='../../Spritesheets/Map', show_index=True);
+app.router.add_static('/css/', path='../../dist/css')
+app.router.add_static('/Spritesheets', path='../../dist/Spritesheets')
+# app.router.add_static('/Map', path='../../dist/Spritesheets/Map', show_index=True);
 
 if __name__ == '__main__':
     web.run_app(app)
