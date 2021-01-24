@@ -9,7 +9,7 @@ import socketIOClient from "socket.io-client";
 import seedrandom from "seed-random";
 
 const win = new WindowManager();
-win.debug = true;
+// win.debug = true;
 seedrandom("troy");
 const sock = socketIOClient();
 const gui = new ItemGui(win);
