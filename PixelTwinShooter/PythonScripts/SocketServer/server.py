@@ -51,7 +51,7 @@ app.router.add_get('/bundle.js', bundle)
 app.router.add_static('/fav/', path='../../favicon/')
 app.router.add_static('/css/', path='../../dist/css')
 app.router.add_static('/Spritesheets', path='../../dist/Spritesheets')
-app.router.add_static('/Map', path='../../dist/Spritesheets/Map', show_index=True);
+# app.router.add_static('/Map', path='../../dist/Spritesheets/Map', show_index=True);
 
 if __name__ == '__main__':
     web.run_app(app)
